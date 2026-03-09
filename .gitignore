@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+.venv/
+uploads/
+target/
+*.pdf
+.vscode/
+.idea/

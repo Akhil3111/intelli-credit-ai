@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliCredit AI</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        
+        <header class="navbar">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>IntelliCredit AI</span>
+            </div>
+            <div class="user-profile">Corporate Lending Agent</div>
+        </header>
+
+        <main class="main-content">
+            <div class="header-section">
+                <h1>Credit Appraisal Dashboard</h1>
+                <p>Upload borrower documents to instantly generate an AI-powered Credit Appraisal Memo.</p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="flash-messages">
+                  {% for message in messages %}
+                    <div class="flash-alert">{{ message }}</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <div class="grid-layout">
+                <!-- Left Column: Upload Form -->
+                <div class="left-panel">
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2>Document Ingestion</h2>
+                        </div>
+                        <form action="/" method="POST" enctype="multipart/form-data" class="upload-form">
+                            
+                            <div class="form-group">
+                                <label for="annual_report">Annual Report (PDF)<span class="required">*</span></label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="annual_report" name="annual_report" accept=".pdf" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gst_csv">GST Returns (CSV)<span class="required">*</span></label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="gst_csv" name="gst_csv" accept=".csv" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bank_csv">Bank Statements (CSV)<span class="required">*</span></label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="bank_csv" name="bank_csv" accept=".csv" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="news_files">External News/Intel (Text Files) <span class="optional">(Optional)</span></label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="news_files" name="news_files" accept=".txt" multiple>
+                                </div>
+                                <span class="help-text">Upload raw .txt news articles for sentiment analysis.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="officer_notes">Credit Officer Notes <span class="optional">(Optional)</span></label>
+                                <textarea id="officer_notes" name="officer_notes" rows="3" placeholder="e.g. Factory running at low capacity, recent management changes..." style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical; margin-top: 5px;"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <span>Run AI Risk Analysis</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column: Results Dashboard (Shown conditionally if analysis is done) -->
+                <div class="right-panel">
+                    {% if total_score %}
+                    <div class="results-container slide-up">
+                        
+                        <!-- Top Action Bar -->
+                        <div class="results-header">
+                            <h2>Analysis Results for <span style="color: #4F46E5;">{{ organization_name }}</span></h2>
+                            <a href="{{ url_for('download_cam') }}" class="btn btn-secondary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                Download CAM
+                            </a>
+                        </div>
+
+                        <!-- Hero Score Card -->
+                        <div class="card score-card {{ decision|lower }}" style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                            <div style="flex: 1;">
+                                <div class="score-header" style="justify-content: flex-start; gap: 16px;">
+                                    <span class="label">Total Risk Score</span>
+                                    <div class="badge decision-badge">{{ decision }}</div>
+                                </div>
+                                <div class="score-body" style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap; margin-top: 10px;">
+                                    <div class="score-number">{{ total_score }}<span>/100</span></div>
+                                    <div style="display: flex; gap: 32px;">
+                                        <div class="interest-rate" style="text-align: left;">
+                                            <span class="label">Suggested Interest:</span>
+                                            <span class="value">{{ interest }}</span>
+                                        </div>
+                                        <div class="interest-rate" style="text-align: left;">
+                                            <span class="label">Suggested Limit:</span>
+                                            <span class="value">{{ limit }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 160px; height: 160px; flex-shrink: 0;">
+                                <canvas id="scoreGauge"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Decision Explanation -->
+                        <div class="card mt-4" style="border-left: 4px solid var(--primary); background: #eff6ff;">
+                            <h3>Decision Rationale</h3>
+                            <p style="color: var(--text-primary); line-height: 1.5;">{{ explanation }}</p>
+                        </div>
+
+                        <!-- 5 Cs Breakdown -->
+                        <div class="card">
+                            <h3>The Five Cs Assessment</h3>
+                            <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+                                <canvas id="fiveCsRadar"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Financials -->
+                        <div class="card">
+                            <h3>Financial Integrity Snapshot</h3>
+                            <div class="fin-grid">
+                                <div class="fin-stat">
+                                    <span class="stat-label">Net Profit (Cr)</span>
+                                    <span class="stat-value">₹{{ financials.get('Net Profit', 'N/A') }}</span>
+                                </div>
+                                <div class="fin-stat">
+                                    <span class="stat-label">ROA</span>
+                                    <span class="stat-value">{{ financials.get('ROA', 'N/A') }}%</span>
+                                </div>
+                                <div class="fin-stat">
+                                    <span class="stat-label">CAR</span>
+                                    <span class="stat-value">{{ financials.get('Capital Adequacy Ratio', 'N/A') }}%</span>
+                                </div>
+                                <div class="fin-stat">
+                                    <span class="stat-label">Net NPA</span>
+                                    <span class="stat-value">{{ financials.get('Net NPA', 'N/A') }}%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GST & Bank Reconciliation -->
+                        <div class="card mt-4">
+                            <h3>GST vs Bank Reconciliation</h3>
+                            <div style="width: 100%; height: 300px; margin-bottom: 20px;">
+                                <canvas id="gstBankBar"></canvas>
+                            </div>
+                            <div class="fin-grid">
+                                <div class="fin-stat">
+                                    <span class="stat-label">Mismatched Months (>15%)</span>
+                                    <span class="stat-value">{{ gst_bank_results.get('high_mismatch_months', []) | length }}</span>
+                                </div>
+                                <div class="fin-stat">
+                                    <span class="stat-label">Repeated Counterparties</span>
+                                    <span class="stat-value">{{ gst_bank_results.get('suspicious_counterparties', []) | length }}</span>
+                                </div>
+                                <div class="fin-stat">
+                                    <span class="stat-label">ML Anomalies Detected</span>
+                                    <span class="stat-value">{{ gst_bank_results.get('anomaly_months', []) | length }}</span>
+                                </div>
+                            </div>
+                            {% if gst_bank_results.get('anomaly_months') %}
+                            <div class="alert mt-3" style="border-left-color: var(--danger); background: #fef2f2; color: var(--danger);">
+                                <strong>ML Anomalies Flagged in:</strong> {{ gst_bank_results.get('anomaly_months') | join(', ') }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- External Intelligence -->
+                        <div class="card mt-4">
+                            <h3>External News & Intelligence</h3>
+                            <div class="fin-grid">
+                                <div class="fin-stat">
+                                    <span class="stat-label">Sentiment</span>
+                                    <span class="stat-value">{{ news_insights.get('sentiment_score', 'N/A') }}</span>
+                                </div>
+                                <div class="fin-stat">
+                                    <span class="stat-label">Litigation Risk</span>
+                                    <span class="stat-value">{{ "Yes" if news_insights.get('litigation_detected') else "No" }}</span>
+                                </div>
+                            </div>
+                            {% if news_insights.get('risk_keywords') %}
+                            <div class="alert mt-3" style="background: #eff6ff; border-left: 4px solid var(--primary);">
+                                <strong>Detected Risk Keywords:</strong> <span style="color: var(--text-primary);">{{ news_insights.get('risk_keywords') | join(', ') }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    {% else %}
+                    <!-- Empty State -->
+                    <div class="empty-state card">
+                        <div class="empty-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <h3>Awaiting Documents</h3>
+                        <p>Upload the borrower's annual report, GST returns, and bank statements on the left to begin the intelligent risk appraisal process.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Render Charts if Analysis is Done -->
+    {% if total_score %}
+    <script>
+        // 1. Radar Chart for Five Cs
+        const radarContext = document.getElementById('fiveCsRadar').getContext('2d');
+        new Chart(radarContext, {
+            type: 'radar',
+            data: {
+                labels: ['Character (25)', 'Capacity (20)', 'Capital (15)', 'Collateral (15)', 'Conditions (25)'],
+                datasets: [{
+                    label: 'Score Allocation',
+                    data: [{{ character }}, {{ capacity }}, {{ capital }}, {{ collateral }}, {{ conditions }}],
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(79, 70, 229, 1)'
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 25,
+                        ticks: { stepSize: 5 }
+                    }
+                }
+            }
+        });
+
+        // 2. Bar Chart for GST vs Bank
+        const gstBankData = {{ gst_bank_results.get('mismatch_table', []) | tojson }};
+        if (gstBankData && gstBankData.length > 0) {
+            const labels = gstBankData.map(row => row.month);
+            const gstData = gstBankData.map(row => row.gst_revenue);
+            const bankData = gstBankData.map(row => row.bank_inflow);
+
+            const barContext = document.getElementById('gstBankBar').getContext('2d');
+            new Chart(barContext, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'GST Declared',
+                            data: gstData,
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)' // Blue
+                        },
+                        {
+                            label: 'Bank Received',
+                            data: bankData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)' // Green
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 3. Simple Doughnut Gauge for Total Score
+        const gaugeContext = document.getElementById('scoreGauge').getContext('2d');
+        const score = {{ total_score }};
+        const remainder = 100 - score;
+        const color = score > 70 ? '#10B981' : (score > 50 ? '#F59E0B' : '#EF4444');
+
+        new Chart(gaugeContext, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [score, remainder],
+                    backgroundColor: [color, '#E5E7EB'],
+                    borderWidth: 0,
+                    circumference: 180,
+                    rotation: 270
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
