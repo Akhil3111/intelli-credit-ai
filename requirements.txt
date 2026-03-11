@@ -20,3 +20,4 @@ duckduckgo-search
 xgboost
 shap
 gunicorn
+feedparser
