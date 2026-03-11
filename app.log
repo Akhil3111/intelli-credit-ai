@@ -926,3 +926,8 @@ sqlite3.OperationalError: no such table: processing_pipeline
 2026-03-11 18:55:10,851 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:10] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
 2026-03-11 18:55:14,166 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:14] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
 2026-03-11 18:55:16,856 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:16] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 19:09:19,162 [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.31.172:5000
+2026-03-11 19:09:19,165 [INFO] werkzeug - [33mPress CTRL+C to quit[0m

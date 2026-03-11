@@ -1,0 +1,14 @@
+{
+  "articles": [],
+  "aggregate_risk_modifier": 6,
+  "triangulation_flag": false,
+  "litigation_detected": false,
+  "litigation_score": 0,
+  "regulatory_risk_flag": false,
+  "rating_action": "Stable",
+  "negative_hits": 0,
+  "total_articles": 0,
+  "macro_insights": "No sector-level signals retrieved.",
+  "sector_risk_modifier": 6,
+  "timestamp": "2026-03-11T19:12:57.587618"
+}

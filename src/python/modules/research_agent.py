@@ -3,8 +3,28 @@ from textblob import TextBlob
 import feedparser
 import datetime
 import logging
+import os
+from google import genai
 
 logger = logging.getLogger(__name__)
+
+# ── Gemini Translation ───────────────────────────────────────────────────────
+def _translate_to_english(text: str) -> str:
+    """Translates non-English text to English using Gemini."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return text
+    try:
+        client = genai.Client(api_key=api_key)
+        prompt = f"Translate the following news article text directly to professional English. Output ONLY the translated English text, nothing else.\n\nTEXT:\n{text}"
+        resp = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+        )
+        return resp.text.strip()
+    except Exception as e:
+        logger.warning(f"Translation failed: {e}")
+        return text
 
 _SECTOR_RISK_MAP = {
     "Manufacturing":   5,
@@ -133,12 +153,16 @@ def execute_precognitive_research(company_name: str, sector: str = "") -> dict:
     entity_queries = [l for l,_,_,tags in _QUERY_TEMPLATES if "macro" not in tags]
     for label in entity_queries:
         for article in all_raw.get(label, []):
-            full_text = f"{article['title']}. {article['snippet']}"
+            title   = article['title']
+            snippet = article['snippet']
+            full_text = f"{title}. {snippet}"
 
-            # Skip non-English articles (Hindi, Tamil, etc.)
+            # Translate non-English articles instead of skipping
             if not _is_english(full_text):
-                logger.debug(f"Skipping non-English article: {article['title'][:60]}")
-                continue
+                logger.debug(f"Translating non-English article: {title[:60]}")
+                title = f"[Translated] {_translate_to_english(title)}"
+                snippet = _translate_to_english(snippet)
+                full_text = f"{title}. {snippet}"
 
             lowered = full_text.lower()
             sentiment = analyze_sentiment(full_text)
@@ -175,6 +199,10 @@ def execute_precognitive_research(company_name: str, sector: str = "") -> dict:
 
     # Google News RSS
     for title in rss_titles:
+        if not _is_english(title):
+            logger.debug(f"Translating non-English RSS title: {title[:60]}")
+            title = f"[Translated] {_translate_to_english(title)}"
+            
         sent = analyze_sentiment(title)
         analyzed_news.append({
             "title":              title,
