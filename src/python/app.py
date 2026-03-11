@@ -153,6 +153,156 @@ def upload_documents(entity_id):
     return render_template("upload_documents.html", entity_id=entity_id)
 
 
+# ── Auto-classifier (filename + content keyword matching) ─────────────────────
+_AUTO_CLASSIFY_RULES = [
+    # (category_key, display_name, filename_keywords, confidence)
+    ("alm_document",         "Asset Liability Management (ALM)",
+     ["alm", "asset_liab", "asset-liab", "liquidity", "maturity_profile",
+      "gap_analysis", "liability", "funding_profile"], 0.92),
+
+    ("shareholding_pattern", "Shareholding Pattern",
+     ["shareholding", "share_holding", "shareholder", "ownership",
+      "promoter_holding", "mca", "benpos", "equity_holding"], 0.93),
+
+    ("borrowing_profile",    "Borrowing Profile",
+     ["borrowing", "borrow", "loan_schedule", "credit_facility",
+      "term_loan", "working_capital", "debt_schedule",
+      "sanction_letter", "bank_limit"], 0.90),
+
+    ("annual_reports",       "Annual Report",
+     ["annual", "annual_report", "p&l", "pnl", "profit_loss",
+      "balance_sheet", "cashflow", "cash_flow", "financial_statement",
+      "audited", "standalone", "consolidated", "itar", "itr",
+      "gst_return", "gstr"], 0.91),
+
+    ("portfolio_data",       "Portfolio Cuts",
+     ["portfolio", "npa", "segment", "sector_cut", "performance",
+      "collection_efficiency", "pool", "disbursement",
+      "vintage", "delinquency", "dpd", "par"], 0.89),
+]
+_SUPPORTED_EXTS = {".pdf", ".xlsx", ".xls", ".csv", ".png", ".jpg", ".jpeg", ".tiff"}
+
+
+def auto_classify_file(filename: str) -> tuple[str, str, float]:
+    """
+    Returns (category_key, display_name, confidence) for a given filename.
+    Falls back to 'annual_reports' with 0.50 confidence if no rule matches.
+    """
+    name_lower = filename.lower().replace(" ", "_").replace("-", "_")
+    best_key, best_name, best_conf = "annual_reports", "Annual Report", 0.50
+
+    for cat_key, cat_name, keywords, base_conf in _AUTO_CLASSIFY_RULES:
+        for kw in keywords:
+            if kw in name_lower:
+                # Boost confidence slightly for longer / more specific keyword
+                conf = round(base_conf + min(len(kw) / 100, 0.07), 2)
+                if conf > best_conf:
+                    best_key, best_name, best_conf = cat_key, cat_name, conf
+                break   # first keyword match is enough per rule
+
+    return best_key, best_name, best_conf
+
+
+# ── Bulk ZIP Upload ───────────────────────────────────────────────────────────
+@app.route("/api/entity/<int:entity_id>/upload_bulk", methods=["POST"])
+def handle_bulk_upload(entity_id):
+    """
+    Accept a single .zip file, extract all supported documents,
+    auto-classify each one, and redirect to classification review.
+    """
+    import zipfile
+
+    entity_dir = os.path.join(app.config["UPLOAD_FOLDER"], str(entity_id))
+    os.makedirs(entity_dir, exist_ok=True)
+    _upd(entity_id, "documents_uploaded", "running", "Processing ZIP upload")
+
+    zip_file = request.files.get("bulk_zip")
+    if not zip_file or not zip_file.filename:
+        flash("Please select a ZIP file to upload.", "danger")
+        return redirect(url_for("upload_documents", entity_id=entity_id))
+
+    ext = os.path.splitext(zip_file.filename)[1].lower()
+    if ext != ".zip":
+        flash("Only .zip files are accepted for bulk upload.", "danger")
+        return redirect(url_for("upload_documents", entity_id=entity_id))
+
+    # Save the zip to a temp location, then extract
+    zip_save_path = os.path.join(entity_dir, secure_filename(zip_file.filename))
+    zip_file.save(zip_save_path)
+
+    conn   = get_db_connection()
+    cursor = conn.cursor()
+    classified_docs = []
+
+    try:
+        with zipfile.ZipFile(zip_save_path, "r") as zf:
+            for member in zf.infolist():
+                # Skip directories and hidden/system files
+                if member.is_dir():
+                    continue
+                fname = os.path.basename(member.filename)
+                if fname.startswith(".") or fname.startswith("__"):
+                    continue
+                file_ext = os.path.splitext(fname)[1].lower()
+                if file_ext not in _SUPPORTED_EXTS:
+                    logger.info(f"Skipping unsupported file: {fname}")
+                    continue
+
+                safe_fname = secure_filename(fname)
+                dest_path  = os.path.join(entity_dir, safe_fname)
+
+                # Extract file
+                with zf.open(member) as src, open(dest_path, "wb") as dst:
+                    dst.write(src.read())
+
+                # Auto-classify
+                cat_key, cat_name, confidence = auto_classify_file(safe_fname)
+
+                cursor.execute(
+                    "INSERT OR IGNORE INTO documents "
+                    "(entity_id, filename, category, status) VALUES (?,?,?,'Classified')",
+                    (entity_id, safe_fname, cat_name),
+                )
+                doc_id = cursor.lastrowid or 0
+                classified_docs.append({
+                    "id":         doc_id,
+                    "filename":   safe_fname,
+                    "category":   cat_name,
+                    "cat_key":    cat_key,
+                    "confidence": confidence,
+                })
+                logger.info(f"[Bulk] {safe_fname} → {cat_name} ({confidence*100:.0f}%)")
+
+    except zipfile.BadZipFile:
+        flash("The uploaded file is not a valid ZIP archive.", "danger")
+        conn.close()
+        return redirect(url_for("upload_documents", entity_id=entity_id))
+    finally:
+        # Remove the zip after extraction
+        try:
+            os.remove(zip_save_path)
+        except OSError:
+            pass
+
+    conn.commit()
+    conn.close()
+
+    if not classified_docs:
+        _upd(entity_id, "documents_uploaded", "failed", "No supported files found in ZIP")
+        flash("No supported document files found in the ZIP (supported: PDF, Excel, CSV, images).", "warning")
+        return redirect(url_for("upload_documents", entity_id=entity_id))
+
+    _upd(entity_id, "documents_uploaded", "completed", f"{len(classified_docs)} files extracted & classified")
+    _upd(entity_id, "classification", "running", "Awaiting analyst review")
+
+    return render_template(
+        "review_classification.html",
+        entity_id=entity_id,
+        documents=classified_docs,
+    )
+
+
+
 @app.route("/api/entity/<int:entity_id>/upload", methods=["POST"])
 def handle_document_upload(entity_id):
     entity_dir = os.path.join(app.config["UPLOAD_FOLDER"], str(entity_id))
@@ -460,6 +610,24 @@ def download_report(entity_id, format_type):
                          download_name=f"CAM_Report_Entity_{entity_id}.{format_type}")
     flash("Report not found – please re-run the analysis.")
     return redirect(url_for("risk_analysis_dashboard", entity_id=entity_id))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# OSINT Cache Control  (determinism fix)
+# ─────────────────────────────────────────────────────────────────────────────
+@app.route("/api/entity/<int:entity_id>/refresh_osint", methods=["DELETE"])
+def refresh_osint_cache(entity_id):
+    """
+    Delete the cached OSINT result for this entity so the next
+    pipeline run scrapes fresh data.
+    """
+    base_dir   = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    cache_path = os.path.join(base_dir, "data", "processed", str(entity_id), "osint_cache.json")
+    if os.path.exists(cache_path):
+        os.remove(cache_path)
+        logger.info(f"[Entity {entity_id}] OSINT cache cleared.")
+        return jsonify({"success": True, "message": "OSINT cache cleared. Next run will scrape fresh data."})
+    return jsonify({"success": False, "message": "No cache found for this entity."})
 
 
 # ─────────────────────────────────────────────────────────────────────────────

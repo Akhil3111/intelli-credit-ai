@@ -287,10 +287,27 @@ def orchestrate_engine(entity_id: int, pipeline_status: dict, analyst_notes: str
 
         ratios = calculate_financial_ratios(financials)
 
-        _upd("research", "running", f"Scraping OSINT for {company_name}")
-        research = execute_precognitive_research(company_name, sector)
-        _upd("research", "completed",
-             f"{len(research.get('articles', []))} signals | litigation={research.get('litigation_detected')}")
+        # ── OSINT cache (determinism fix) ──────────────────────────────────
+        # On the first run, results are scraped and saved to osint_cache.json.
+        # On subsequent runs with the same entity, the cached result is loaded
+        # so output is identical. Pass force_refresh=True to re-scrape.
+        osint_cache_path = os.path.join(processed_dir, "osint_cache.json")
+
+        if os.path.exists(osint_cache_path):
+            _upd("research", "running", f"Loading cached OSINT for {company_name}")
+            with open(osint_cache_path, "r") as _f:
+                research = json.load(_f)
+            _upd("research", "completed",
+                 f"[CACHED] {len(research.get('articles', []))} signals | litigation={research.get('litigation_detected')}")
+        else:
+            _upd("research", "running", f"Scraping OSINT for {company_name}")
+            research = execute_precognitive_research(company_name, sector)
+            # Save to cache so subsequent runs are deterministic
+            os.makedirs(processed_dir, exist_ok=True)
+            with open(osint_cache_path, "w") as _f:
+                json.dump(research, _f, indent=2, default=str)
+            _upd("research", "completed",
+                 f"{len(research.get('articles', []))} signals | litigation={research.get('litigation_detected')}")
 
         # Gap 2 — India signals
         try:

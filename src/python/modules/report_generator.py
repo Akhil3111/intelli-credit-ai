@@ -23,7 +23,11 @@ def _gemini_generate(prompt: str, fallback: dict | str) -> str | dict:
         return fallback
     try:
         client = genai.Client(api_key=api_key)
-        resp   = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        resp   = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+            config={"temperature": 0.0},   # ← deterministic output
+        )
         return resp.text.replace("```json", "").replace("```", "").strip()
     except Exception as e:
         logger.warning(f"Gemini error: {e}")
