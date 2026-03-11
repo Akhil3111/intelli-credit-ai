@@ -68,13 +68,53 @@ CATEGORY_MAPPING = {
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Cleanup & Maintenance
+# ─────────────────────────────────────────────────────────────────────────────
+def _cleanup_old_entities():
+    """Keep only the 5 most recent entities. Delete everything else from DB and disk."""
+    try:
+        conn = get_db_connection()
+        all_ids = [row["id"] for row in conn.execute("SELECT id FROM entities ORDER BY id DESC").fetchall()]
+        
+        if len(all_ids) > 5:
+            ids_to_delete = all_ids[5:]
+            for eid in ids_to_delete:
+                # Delete DB records
+                conn.execute("DELETE FROM documents WHERE entity_id = ?", (eid,))
+                conn.execute("DELETE FROM processing_pipeline WHERE entity_id = ?", (eid,))
+                conn.execute("DELETE FROM entities WHERE id = ?", (eid,))
+                
+                # Delete directories
+                for folder in [
+                    os.path.join(app.config["UPLOAD_FOLDER"], str(eid)),
+                    os.path.join(basedir, "..", "data", "processed", str(eid)),
+                    os.path.join(basedir, "..", "..", "reports", str(eid))
+                ]:
+                    if os.path.exists(folder):
+                        shutil.rmtree(folder, ignore_errors=True)
+                
+                # Clear memory
+                _pipeline_status.pop(eid, None)
+                _report_cache.pop(eid, None)
+                _doc_status.pop(eid, None)
+                logger.info(f"Auto-deleted old entity {eid} to maintain top 5 limit.")
+                
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        logger.error(f"Entity cleanup failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Stage 1 – Entity Onboarding
 # ─────────────────────────────────────────────────────────────────────────────
 @app.route("/", methods=["GET"])
 def home():
+    _cleanup_old_entities()  # Enforce max 5 entities
+
     conn = get_db_connection()
     entities = conn.execute(
-        "SELECT id, company_name, cin, status, turnover FROM entities ORDER BY id DESC"
+        "SELECT id, company_name, cin, status, turnover FROM entities ORDER BY id DESC LIMIT 5"
     ).fetchall()
     conn.close()
     if not entities:
