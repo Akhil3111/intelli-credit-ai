@@ -827,3 +827,43 @@ AttributeError: 'sqlite3.Row' object has no attribute 'get'
 2026-03-11 15:02:22,575 [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:5000
 2026-03-11 15:02:22,576 [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+2026-03-11 18:55:52,877 [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.31.172:5000
+2026-03-11 18:55:52,880 [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+2026-03-11 18:55:53,173 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:53] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:55,867 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:55] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:59,185 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:59] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:01,875 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:01] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:05,173 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:05] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:07,874 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:07] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:11,185 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:11] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:13,878 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:13] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:17,187 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:17] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:19,876 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:19] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:23,183 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:23] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:25,869 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:25] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:29,188 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:29] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:31,874 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:31] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:35,188 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:35] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:37,870 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:37] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:41,186 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:41] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:43,883 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:43] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:47,190 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:47] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:49,872 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:49] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:53,198 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:53] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:55,877 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:55] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:56:59,199 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:56:59] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:01,883 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:01] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:05,199 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:05] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:07,887 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:07] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:11,192 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:11] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:13,879 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:13] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:17,194 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:17] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:19,886 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:19] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:23,195 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:23] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:25,895 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:25] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:29,193 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:29] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:31,899 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:31] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:57:35,196 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:57:35] "GET /api/pipeline_status/10 HTTP/1.1" 200 -

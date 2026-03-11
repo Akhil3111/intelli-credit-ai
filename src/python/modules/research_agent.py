@@ -50,6 +50,18 @@ def _safe_rss_titles(url: str, max_items: int = 5) -> list:
         return []
 
 
+def _is_english(text: str) -> bool:
+    """
+    Returns True if the text is predominantly English.
+    Uses ASCII character ratio — non-Latin scripts (Hindi, Tamil etc.) have low ASCII ratios.
+    """
+    if not text:
+        return True
+    ascii_chars = sum(1 for c in text if ord(c) < 128)
+    return (ascii_chars / len(text)) > 0.80
+
+
+
 def analyze_sentiment(text: str) -> dict:
     """TextBlob sentiment classifier."""
     blob = TextBlob(text)
@@ -122,6 +134,12 @@ def execute_precognitive_research(company_name: str, sector: str = "") -> dict:
     for label in entity_queries:
         for article in all_raw.get(label, []):
             full_text = f"{article['title']}. {article['snippet']}"
+
+            # Skip non-English articles (Hindi, Tamil, etc.)
+            if not _is_english(full_text):
+                logger.debug(f"Skipping non-English article: {article['title'][:60]}")
+                continue
+
             lowered = full_text.lower()
             sentiment = analyze_sentiment(full_text)
             total_risk_modifier += sentiment["risk_modifier"]

@@ -771,3 +771,158 @@ sqlite3.OperationalError: no such table: processing_pipeline
 2026-03-11 18:39:07,380 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:39:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
 2026-03-11 18:40:07,128 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:40:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
 2026-03-11 18:41:07,392 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:41:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:42:07,072 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:42:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:43:07,393 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:43:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:44:07,071 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:44:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:07,394 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:43,563 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:43] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:46,331 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:46] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:49,018 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:49] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:52,327 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:52] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:54,568 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:54] "GET /api/entity/8/download/pdf HTTP/1.1" 200 -
+2026-03-11 18:45:55,019 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:55] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:45:58,344 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:45:58] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:01,026 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:01] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:04,349 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:04] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:07,022 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:10,340 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:10] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:13,032 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:13] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:16,344 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:16] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:19,036 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:19] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:22,343 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:22] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:25,026 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:25] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:28,346 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:28] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:31,033 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:31] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:34,353 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:34] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:37,041 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:37] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:40,342 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:40] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:43,038 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:43] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:46,347 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:46] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:49,033 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:49] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:52,343 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:52] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:55,037 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:55] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:46:58,364 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:46:58] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:01,037 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:01] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:04,349 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:04] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:07,048 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:10,401 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:10] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:13,109 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:13] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:16,406 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:16] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:19,102 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:19] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:22,416 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:22] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:25,104 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:25] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:28,421 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:28] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:31,106 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:31] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:34,422 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:34] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:37,110 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:37] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:40,418 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:40] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:43,046 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:43] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:46,372 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:46] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:49,057 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:49] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:52,372 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:52] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:55,053 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:55] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:47:58,365 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:47:58] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:01,101 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:01] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:04,366 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:04] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:07,062 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:07] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:10,377 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:10] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:13,055 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:13] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:16,363 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:16] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:19,059 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:19] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:22,431 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:22] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:25,117 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:25] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:28,427 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:28] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:31,127 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:31] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:34,437 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:34] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:37,127 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:37] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:40,431 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:40] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:43,130 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:43] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:46,455 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:46] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:49,125 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:49] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:52,444 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:52] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:55,131 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:55] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:48:58,440 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:48:58] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:49:01,067 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:49:01] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:49:04,089 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:49:04] "GET /onboarding HTTP/1.1" 200 -
+2026-03-11 18:49:04,094 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:49:04] "GET /api/pipeline_status/8 HTTP/1.1" 200 -
+2026-03-11 18:49:12,679 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:49:12] "[32mPOST /api/entity/create HTTP/1.1[0m" 302 -
+2026-03-11 18:49:12,975 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:49:12] "GET /entity/9/upload_documents HTTP/1.1" 200 -
+2026-03-11 18:49:46,929 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:49:46] "GET /onboarding HTTP/1.1" 200 -
+2026-03-11 18:50:55,351 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:50:55] "[32mPOST /api/entity/create HTTP/1.1[0m" 302 -
+2026-03-11 18:50:55,363 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:50:55] "GET /entity/10/upload_documents HTTP/1.1" 200 -
+2026-03-11 18:51:36,990 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:36] "GET / HTTP/1.1" 200 -
+2026-03-11 18:51:42,717 [INFO] modules.risk_engine - [Entity 9] research: running – Scraping OSINT for check
+2026-03-11 18:51:42,719 [INFO] modules.research_agent - Pre-Cognitive Research started: check | sector: 
+2026-03-11 18:51:43,179 [INFO] primp - response: https://www.bing.com/search?q=check+financial+results+revenue+profit+outlook+India 200
+2026-03-11 18:51:43,825 [INFO] primp - response: https://www.bing.com/search?q=check+promoter+court+case+litigation+NCLT+NCLAT+India 200
+2026-03-11 18:51:44,169 [INFO] primp - response: https://www.bing.com/search?q=check+MCA+ROC+filing+default+penalty+Ministry+Corporate+Affairs 200
+2026-03-11 18:51:44,578 [INFO] primp - response: https://www.bing.com/search?q=check+RBI+SEBI+show+cause+notice+penalty+fine+2024+2025 200
+2026-03-11 18:51:44,932 [INFO] primp - response: https://www.bing.com/search?q=check+CRISIL+ICRA+CARE+rating+downgrade+watch+negative 200
+2026-03-11 18:51:45,274 [INFO] primp - response: https://www.bing.com/search?q=check+NPA+bad+loan+bank+write-off+wilful+defaulter 200
+2026-03-11 18:51:45,671 [INFO] primp - response: https://www.bing.com/search?q=check+GST+fraud+evasion+income+tax+raid+DGGI 200
+2026-03-11 18:51:46,274 [INFO] primp - response: https://www.bing.com/search?q=Indian+corporate+sector+outlook+headwinds+RBI+regulation+India+2024+2025 200
+2026-03-11 18:51:48,468 [INFO] modules.risk_engine - [Entity 9] research: completed – 5 signals | litigation=False
+2026-03-11 18:51:48,472 [INFO] modules.risk_engine - [Entity 9] risk_model: running – Evaluating financial vector and Five C's
+2026-03-11 18:51:48,473 [INFO] modules.risk_engine - [Entity 9] risk_model: completed – PD=0.625 | B (Medium Risk)
+2026-03-11 18:51:48,475 [INFO] modules.risk_engine - [Entity 9] report_generation: running – Synthesising CAM report and GenAI SWOT
+2026-03-11 18:51:48,930 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:48] "GET /entity/9/dashboard HTTP/1.1" 200 -
+2026-03-11 18:51:49,011 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:49] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:51:49,513 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:49] "GET /api/entity/9/docs_status HTTP/1.1" 200 -
+2026-03-11 18:51:52,016 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:52] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:51:55,340 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:55] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:51:58,026 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:51:58] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:01,328 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:01] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:04,017 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:04] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:07,342 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:07] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:10,020 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:10] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:13,336 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:13] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:16,020 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:16] "GET /api/pipeline_status/9 HTTP/1.1" 200 -
+2026-03-11 18:52:19,007 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:19] "GET /onboarding HTTP/1.1" 200 -
+2026-03-11 18:52:46,130 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:46] "[32mPOST /api/entity/create HTTP/1.1[0m" 302 -
+2026-03-11 18:52:46,151 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:52:46] "GET /entity/10/upload_documents HTTP/1.1" 200 -
+2026-03-11 18:53:53,236 [INFO] IntelliCredit - [Entity 10] documents_uploaded=running  Saving files to server
+2026-03-11 18:53:53,414 [INFO] IntelliCredit - [Entity 10] documents_uploaded=completed  3 files saved
+2026-03-11 18:53:53,415 [INFO] IntelliCredit - [Entity 10] classification=running  Awaiting analyst review
+2026-03-11 18:53:53,420 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:53:53] "POST /api/entity/10/upload HTTP/1.1" 200 -
+2026-03-11 18:54:23,979 [INFO] IntelliCredit - [Entity 10] classification=completed  Categories verified by analyst
+2026-03-11 18:54:23,988 [INFO] IntelliCredit - [Entity 10] extraction=running  Extracting text and schema
+2026-03-11 18:54:23,992 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:23] "[32mPOST /api/entity/10/confirm_classification HTTP/1.1[0m" 302 -
+2026-03-11 18:54:24,116 [ERROR] modules.document_processor - Failed to process PDF C:\Users\akhil\OneDrive\Desktop\Desk\intelli-credit-ai\src\python\uploads\10\ril_bank_statements_large.csv: Failed to open file 'C:\\Users\\akhil\\OneDrive\\Desktop\\Desk\\intelli-credit-ai\\src\\python\\uploads\\10\\ril_bank_statements_large.csv'.
+2026-03-11 18:54:31,125 [ERROR] modules.document_processor - Failed to process PDF C:\Users\akhil\OneDrive\Desktop\Desk\intelli-credit-ai\src\python\uploads\10\ril_gst_returns_large.csv: Failed to open file 'C:\\Users\\akhil\\OneDrive\\Desktop\\Desk\\intelli-credit-ai\\src\\python\\uploads\\10\\ril_gst_returns_large.csv'.
+2026-03-11 18:54:31,993 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:31] "GET /entity/10/schema_mapping HTTP/1.1" 200 -
+2026-03-11 18:54:39,332 [INFO] IntelliCredit - [Entity 10] extraction=completed  Schema validated and locked
+2026-03-11 18:54:39,340 [INFO] IntelliCredit - [Entity 10] research=pending  Queued
+2026-03-11 18:54:39,343 [INFO] IntelliCredit - [Entity 10] risk_model=pending  
+2026-03-11 18:54:39,353 [INFO] IntelliCredit - [Entity 10] report_generation=pending  
+2026-03-11 18:54:39,378 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:39] "[32mPOST /api/entity/10/save_schema HTTP/1.1[0m" 302 -
+2026-03-11 18:54:39,422 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:39] "GET /entity/10/loading HTTP/1.1" 200 -
+2026-03-11 18:54:39,471 [INFO] modules.risk_engine - [Entity 10] research: running – Scraping OSINT for srgewrsdrv
+2026-03-11 18:54:39,474 [INFO] modules.research_agent - Pre-Cognitive Research started: srgewrsdrv | sector: Retail
+2026-03-11 18:54:39,539 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:39] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:39,767 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+financial+results+revenue+profit+outlook+India 200
+2026-03-11 18:54:40,093 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+promoter+court+case+litigation+NCLT+NCLAT+India 200
+2026-03-11 18:54:40,375 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+MCA+ROC+filing+default+penalty+Ministry+Corporate+Affairs 200
+2026-03-11 18:54:40,660 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+RBI+SEBI+show+cause+notice+penalty+fine+2024+2025 200
+2026-03-11 18:54:41,369 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+CRISIL+ICRA+CARE+rating+downgrade+watch+negative 200
+2026-03-11 18:54:41,799 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+NPA+bad+loan+bank+write-off+wilful+defaulter 200
+2026-03-11 18:54:42,448 [INFO] primp - response: https://www.bing.com/search?q=srgewrsdrv+GST+fraud+evasion+income+tax+raid+DGGI 200
+2026-03-11 18:54:42,784 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:42] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:42,785 [INFO] primp - response: https://www.bing.com/search?q=Retail+sector+outlook+headwinds+RBI+regulation+India+2024+2025 200
+2026-03-11 18:54:44,223 [INFO] modules.risk_engine - [Entity 10] research: completed – 10 signals | litigation=False
+2026-03-11 18:54:44,224 [INFO] modules.risk_engine - [Entity 10] risk_model: running – Evaluating financial vector and Five C's
+2026-03-11 18:54:44,225 [INFO] modules.risk_engine - [Entity 10] risk_model: completed – PD=0.35 | A (Low Risk)
+2026-03-11 18:54:44,226 [INFO] modules.risk_engine - [Entity 10] report_generation: running – Synthesising CAM report and GenAI SWOT
+2026-03-11 18:54:45,468 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:45] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:46,796 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:46] "GET /entity/10/dashboard HTTP/1.1" 200 -
+2026-03-11 18:54:46,844 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:46] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:47,052 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:47] "GET /api/entity/10/docs_status HTTP/1.1" 200 -
+2026-03-11 18:54:50,162 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:50] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:52,846 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:52] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:56,172 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:56] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:54:58,846 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:54:58] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:02,158 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:02] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:04,857 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:04] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:08,174 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:08] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:10,851 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:10] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:14,166 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:14] "GET /api/pipeline_status/10 HTTP/1.1" 200 -
+2026-03-11 18:55:16,856 [INFO] werkzeug - 127.0.0.1 - - [11/Mar/2026 18:55:16] "GET /api/pipeline_status/10 HTTP/1.1" 200 -

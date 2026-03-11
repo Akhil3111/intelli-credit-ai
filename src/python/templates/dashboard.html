@@ -170,7 +170,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         CIN: {{ data.entity.get('cin','—') }} &nbsp;·&nbsp;
         PAN: {{ data.entity.get('pan','—') }} &nbsp;·&nbsp;
         Sector: {{ data.entity.get('sector','—') }} / {{ data.entity.get('subsector','—') }} &nbsp;·&nbsp;
-        Loan: ₹{{ data.entity.get('loan_amount','—') }} Cr ({{ data.entity.get('loan_type','—') }}, {{ data.entity.get('loan_tenure','—') }} mo @ {{ data.entity.get('interest_rate','—') }}%)
+        Loan: ₹{{ data.entity.get('loan_amount','—') }} Crores ({{ data.entity.get('loan_type','—') }}, {{ data.entity.get('loan_tenure','—') }} Months @ {{ data.entity.get('interest_rate','—') }}% p.a.)
       </div>
     </div>
     <div>
@@ -227,14 +227,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
     <div class="col-md-4">
       <div class="card h-100">
-        <div class="section-label">Loan Request</div>
-        <div class="kpi-big" style="color:var(--primary)">₹{{ data.entity.get('loan_amount','—') }} Cr</div>
-        <div class="kpi-sub">{{ data.entity.get('loan_type','—') }} loan</div>
+        <div class="section-label">Loan Request Details</div>
+        <div class="kpi-big" style="color:var(--primary)">₹{{ data.entity.get('loan_amount','—') }} Crores</div>
+        <div class="kpi-sub">{{ data.entity.get('loan_type','—') }}</div>
         <hr style="border-color:var(--border);margin:.8rem 0">
-        {% for lbl,key in [('Tenure','loan_tenure'),('Interest Rate','interest_rate'),('Purpose','purpose')] %}
+        {% for lbl,key,suffix in [
+          ('Tenure (Months)','loan_tenure',' Months'),
+          ('Interest Rate','interest_rate','% per annum'),
+          ('Purpose of Loan','purpose','')
+        ] %}
         <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.3rem">
           <span style="color:var(--muted)">{{ lbl }}</span>
-          <span style="font-weight:600;text-align:right;max-width:180px">{{ data.entity.get(key,'—') }}{% if key=='loan_tenure' %} mo{% elif key=='interest_rate' %}%{% endif %}</span>
+          <span style="font-weight:600;text-align:right;max-width:180px">{{ data.entity.get(key,'—') }}{{ suffix }}</span>
         </div>{% endfor %}
       </div>
     </div>
