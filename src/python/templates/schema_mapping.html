@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Schema Mapping | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+:root{--bg:#F8FAFC;--white:#fff;--border:#E2E8F0;--primary:#1E40AF;--green:#059669;--amber:#D97706;--red:#DC2626;--text:#0F172A;--muted:#64748B;--muted2:#94A3B8;}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-size:.9rem;font-weight:700;color:var(--primary);}
+.pipe{display:flex;align-items:center;padding:.9rem 2rem;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;}
+.ps{display:flex;flex-direction:column;align-items:center;flex:1;min-width:64px;}
+.pd{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--muted2);}
+.pd.done{background:var(--green);border-color:var(--green);color:#fff;} .pd.act{background:var(--primary);border-color:var(--primary);color:#fff;}
+.pl{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted2);margin-top:4px;text-align:center;}
+.pl.done{color:var(--green);} .pl.act{color:var(--primary);}
+.pc{flex:1;height:1px;background:var(--border);margin-bottom:18px;} .pc.done{background:var(--green);}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
+h1{font-size:1.2rem;font-weight:700;margin-bottom:.2rem;} .sub{font-size:.8rem;color:var(--muted);margin-bottom:.5rem;}
+.note{font-size:.76rem;color:var(--muted);margin-bottom:1.2rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:.6rem .9rem;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:.7rem 1rem;border-bottom:1px solid var(--border);background:var(--bg);text-align:left;}
+td{padding:.7rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.84rem;}
+tr:last-child td{border-bottom:none;} tr:hover td{background:#f8fafc;}
+input.vi{background:var(--white);border:1px solid var(--border);font-size:.82rem;padding:.28rem .55rem;border-radius:5px;width:110px;font-family:'Inter',sans-serif;}
+input.vi:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px rgba(30,64,175,.1);}
+.bg{font-size:.65rem;padding:2px 8px;border-radius:20px;font-weight:600;}
+.bg-h{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
+.bg-m{background:#fffbeb;color:#92400e;border:1px solid #fde68a;}
+.bg-l{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
+.bg-src{background:#f8fafc;color:var(--muted);border:1px solid var(--border);}
+.btn-proc{background:var(--green);color:#fff;font-weight:700;font-size:.84rem;border:none;padding:.6rem 1.6rem;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:.4rem;}
+.btn-proc:hover{background:#047857;}
+.add-btn{background:transparent;border:1px dashed var(--border);color:var(--muted);font-size:.78rem;padding:.4rem 1rem;border-radius:6px;cursor:pointer;width:100%;margin-top:.6rem;}
+.add-btn:hover{border-color:var(--primary);color:var(--primary);}
+.sl{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:1.2rem 0 .5rem;}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="brand"><i class="bi bi-cpu-fill me-1"></i>Intelli·Credit AI</div><span style="font-size:.78rem;color:var(--muted)">{{ doc_count }} documents processed</span></div>
+<div class="pipe">
+  <div class="ps"><div class="pd done"><i class="bi bi-check-lg"></i></div><div class="pl done">Onboard</div></div><div class="pc done"></div>
+  <div class="ps"><div class="pd done"><i class="bi bi-check-lg"></i></div><div class="pl done">Upload</div></div><div class="pc done"></div>
+  <div class="ps"><div class="pd done"><i class="bi bi-check-lg"></i></div><div class="pl done">Classify</div></div><div class="pc done"></div>
+  <div class="ps"><div class="pd act"><i class="bi bi-table"></i></div><div class="pl act">Extract</div></div><div class="pc"></div>
+  <div class="ps"><div class="pd"><i class="bi bi-shield-check"></i></div><div class="pl">Risk</div></div><div class="pc"></div>
+  <div class="ps"><div class="pd"><i class="bi bi-file-earmark-text"></i></div><div class="pl">Report</div></div>
+</div>
+<div class="wrap">
+  <h1>Schema Mapping — Review Extracted Data</h1>
+  <p class="sub">AI extracted the values below. Correct any errors before the risk model runs.</p>
+  <p class="note"><i class="bi bi-lightning-charge me-1" style="color:var(--amber)"></i>All values in <strong>₹ Crore</strong>. Unit conversion (lakhs, millions) applied automatically.</p>
+  <form action="/api/entity/{{ entity_id }}/save_schema" method="POST">
+    <div class="card mb-2">
+      <table>
+        <thead><tr><th>Financial Metric</th><th>Extracted Value (₹ Cr)</th><th>Confidence</th><th>Source</th></tr></thead>
+        <tbody>
+          {% for field, meta in schema_data.items() %}
+          {% set c = meta.confidence|float %}
+          <tr>
+            <td class="fw-semibold">{{ field }}</td>
+            <td><input class="vi" type="number" step="0.01" name="value_{{ field.replace(' ','_') }}" value="{{ meta.value }}"></td>
+            <td>
+              {% if c>=0.85 %}<span class="bg bg-h">{{ (c*100)|round(0)|int }}%</span>
+              {% elif c>=0.60 %}<span class="bg bg-m">{{ (c*100)|round(0)|int }}%</span>
+              {% elif c>0 %}<span class="bg bg-l">{{ (c*100)|round(0)|int }}%</span>
+              {% else %}<span class="bg bg-l">—</span>{% endif %}
+            </td>
+            <td><span class="bg bg-src">{{ meta.source }}</span></td>
+          </tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="sl">Optional — Custom Fields</div>
+    <div id="cf"></div>
+    <button type="button" class="add-btn" onclick="addF()"><i class="bi bi-plus me-1"></i>Add custom metric</button>
+    <div class="d-flex justify-content-end mt-3">
+      <button type="submit" class="btn-proc"><i class="bi bi-play-circle"></i>Save &amp; Run Risk Analysis</button>
+    </div>
+  </form>
+</div>
+<script>
+let ci=0;
+function addF(){
+  const d=document.createElement('div');d.style.cssText='display:flex;gap:.5rem;margin-bottom:.4rem;';
+  d.innerHTML=`<input type="text" name="custom_label_${ci}" placeholder="Field name" style="flex:1;border:1px solid var(--border);border-radius:5px;padding:.3rem .55rem;font-size:.82rem;font-family:Inter,sans-serif">
+  <input type="number" step="0.01" name="custom_value_${ci}" placeholder="0.00" style="width:110px;border:1px solid var(--border);border-radius:5px;padding:.3rem .55rem;font-size:.82rem;font-family:Inter,sans-serif">`;
+  document.getElementById('cf').appendChild(d);ci++;
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

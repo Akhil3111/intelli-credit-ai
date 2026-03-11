@@ -17,3 +17,6 @@ pyod
 google-genai
 python-dotenv
 duckduckgo-search
+xgboost
+shap
+gunicorn

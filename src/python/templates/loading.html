@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Processing | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+:root{--bg:#F8FAFC;--white:#fff;--border:#E2E8F0;--primary:#1E40AF;--green:#059669;--amber:#D97706;--red:#DC2626;--text:#0F172A;--muted:#64748B;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.brand{font-size:.88rem;font-weight:700;color:var(--primary);margin-bottom:2.5rem;text-align:center;}
+h1{font-size:1.4rem;font-weight:700;text-align:center;margin-bottom:.3rem;}
+.sub{color:var(--muted);font-size:.83rem;text-align:center;margin-bottom:2.5rem;}
+
+/* Stepper */
+.stepper{display:flex;align-items:center;width:100%;max-width:740px;margin-bottom:2.5rem;}
+.si{display:flex;flex-direction:column;align-items:center;flex:1;}
+.sicon{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);background:var(--white);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:all .3s;}
+.sicon.completed,.sicon.done{background:var(--green);border-color:var(--green);color:#fff;}
+.sicon.running{background:var(--amber);border-color:var(--amber);color:#fff;animation:pulse 1.5s infinite;}
+.sicon.failed{background:var(--red);border-color:var(--red);color:#fff;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.35);}60%{box-shadow:0 0 0 8px rgba(217,119,6,0);}}
+.slbl{font-size:.62rem;font-weight:600;color:var(--muted);margin-top:5px;text-align:center;text-transform:uppercase;letter-spacing:.4px;}
+.slbl.completed,.slbl.done{color:var(--green);}
+.slbl.running{color:var(--amber);}
+.sconn{flex:1;height:1px;background:var(--border);margin-bottom:20px;}
+.sconn.done,.sconn.completed{background:var(--green);}
+
+/* Stage card */
+.stage-card{width:100%;max-width:740px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.stage-title{font-weight:700;font-size:.95rem;margin-bottom:.2rem;}
+.stage-sub{font-size:.78rem;color:var(--muted);}
+.prog{height:4px;background:var(--border);border-radius:999px;margin-top:12px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--green);border-radius:999px;animation:prg 3s ease-in-out infinite alternate;}
+@keyframes prg{from{width:15%;}to{width:88%;}}
+.elapsed{font-size:.72rem;color:var(--muted);text-align:center;margin-top:1.2rem;}
+</style>
+</head>
+<body>
+<div class="brand"><i class="bi bi-cpu-fill me-1"></i>Intelli·Credit AI</div>
+<h1>Running AI Analysis Pipeline</h1>
+<p class="sub">Entity ID: {{ entity_id }} &nbsp;·&nbsp; Updates every 3 seconds</p>
+
+<div class="stepper">
+  {% set stages=[('documents_uploaded','cloud-upload','Upload'),('classification','tags','Classify'),('extraction','table','Extract'),('research','globe2','Research'),('risk_model','shield-check','Risk'),('report_generation','file-earmark-text','Report')] %}
+  {% for sid,icon,lbl in stages %}
+  <div class="si"><div class="sicon" id="ic-{{ sid }}"><i class="bi bi-{{ icon }}"></i></div><div class="slbl" id="lb-{{ sid }}">{{ lbl }}</div></div>
+  {% if not loop.last %}<div class="sconn" id="cn-{{ loop.index }}"></div>{% endif %}
+  {% endfor %}
+</div>
+
+<div class="stage-card">
+  <div class="stage-title" id="stTitle">Initialising pipeline…</div>
+  <div class="stage-sub" id="stSub">Please wait while the AI processes your documents.</div>
+  <div class="prog"><div class="prog-fill" id="pFill"></div></div>
+</div>
+<div class="elapsed" id="el">Elapsed: 0s</div>
+
+<script>
+const EID="{{ entity_id }}";
+const STAGES=["documents_uploaded","classification","extraction","research","risk_model","report_generation"];
+const DESCS={
+  documents_uploaded:"Securely ingesting uploaded financial documents.",
+  classification:"AI tagging each document by financial category.",
+  extraction:"Parsing financial tables with Camelot + PyMuPDF.",
+  research:"Running OSINT scan: news, litigation, sector signals.",
+  risk_model:"Computing Five C's scores and SHAP risk drivers.",
+  report_generation:"Generating AI narrative and CAM report (PDF + DOCX)."
+};
+let redirected=false,start=Date.now();
+setInterval(()=>{document.getElementById('el').textContent='Elapsed: '+Math.round((Date.now()-start)/1000)+'s';},1000);
+function applyStatus(s,st){
+  const ic=document.getElementById('ic-'+s),lb=document.getElementById('lb-'+s);
+  if(!ic)return;
+  ic.className='sicon '+st;lb.className='slbl '+st;
+  if(st==='completed'||st==='done')ic.innerHTML='<i class="bi bi-check-lg"></i>';
+  else if(st==='failed')ic.innerHTML='<i class="bi bi-x-lg"></i>';
+}
+function poll(){
+  fetch(`/api/pipeline_status/${EID}`)
+    .then(r=>r.json())
+    .then(d=>{
+      let running=null;
+      STAGES.forEach((s,i)=>{
+        const st=d[s]||'pending';
+        applyStatus(s,st);
+        const cn=document.getElementById('cn-'+(i+1));
+        if(cn&&(st==='completed'||st==='done'))cn.classList.add('done');
+        if(st==='running'&&!running)running=s;
+      });
+      if(running){
+        document.getElementById('stTitle').textContent=running.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+        document.getElementById('stSub').textContent=DESCS[running]||'';
+      }
+      if((d.report_generation==='completed'||d.report_generation==='done')&&!redirected){
+        redirected=true;
+        document.getElementById('stTitle').textContent='Analysis Complete — Redirecting…';
+        document.getElementById('stSub').textContent='Dashboard ready.';
+        document.getElementById('pFill').style.cssText='animation:none;width:100%;background:var(--green)';
+        setTimeout(()=>{window.location.href=`/entity/${EID}/dashboard`;},1000);
+      } else if(d.report_generation==='failed'){
+        document.getElementById('stTitle').textContent='Analysis Failed';
+        document.getElementById('stSub').textContent='Check app.log for details.';
+        document.getElementById('pFill').style.cssText='animation:none;width:100%;background:var(--red)';
+      }
+    }).catch(()=>{});
+}
+poll();setInterval(poll,3000);
+</script>
+</body>
+</html>

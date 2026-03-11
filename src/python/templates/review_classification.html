@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Verify Classification | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+:root{--bg:#F8FAFC;--white:#fff;--border:#E2E8F0;--primary:#1E40AF;--green:#059669;--amber:#D97706;--text:#0F172A;--muted:#64748B;--muted2:#94A3B8;}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-size:.9rem;font-weight:700;color:var(--primary);}
+.pipe{display:flex;align-items:center;padding:.9rem 2rem;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;}
+.ps{display:flex;flex-direction:column;align-items:center;flex:1;min-width:64px;}
+.pd{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--muted2);}
+.pd.done{background:var(--green);border-color:var(--green);color:#fff;} .pd.act{background:var(--primary);border-color:var(--primary);color:#fff;}
+.pl{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted2);margin-top:4px;text-align:center;}
+.pl.done{color:var(--green);} .pl.act{color:var(--primary);}
+.pc{flex:1;height:1px;background:var(--border);margin-bottom:18px;} .pc.done{background:var(--green);}
+.wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+h1{font-size:1.2rem;font-weight:700;margin-bottom:.2rem;} .sub{font-size:.8rem;color:var(--muted);margin-bottom:1.2rem;}
+.info-bar{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.7rem 1rem;font-size:.78rem;color:#92400e;margin-bottom:1.2rem;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:.7rem 1rem;border-bottom:1px solid var(--border);text-align:left;background:var(--bg);}
+td{padding:.85rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.84rem;}
+tr:last-child td{border-bottom:none;} tr:hover td{background:#f8fafc;}
+.bar-track{width:90px;height:4px;background:var(--border);border-radius:999px;display:inline-block;vertical-align:middle;}
+.bar-fill{height:100%;background:var(--green);border-radius:999px;}
+.conf-txt{font-size:.74rem;color:var(--muted);margin-left:5px;vertical-align:middle;}
+select.cat{background:var(--white);border:1px solid var(--border);color:var(--text);font-size:.8rem;padding:.3rem .5rem;border-radius:5px;}
+select.cat:focus{outline:1px solid var(--primary);}
+.btn-confirm{background:var(--green);color:#fff;font-weight:700;font-size:.84rem;border:none;padding:.6rem 1.6rem;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:.4rem;}
+.btn-confirm:hover{background:#047857;}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="brand"><i class="bi bi-cpu-fill me-1"></i>Intelli·Credit AI</div><span style="font-size:.78rem;color:var(--muted)">Entity ID: {{ entity_id }}</span></div>
+<div class="pipe">
+  <div class="ps"><div class="pd done"><i class="bi bi-check-lg"></i></div><div class="pl done">Onboard</div></div><div class="pc done"></div>
+  <div class="ps"><div class="pd done"><i class="bi bi-check-lg"></i></div><div class="pl done">Upload</div></div><div class="pc done"></div>
+  <div class="ps"><div class="pd act"><i class="bi bi-tags"></i></div><div class="pl act">Classify</div></div><div class="pc"></div>
+  <div class="ps"><div class="pd"><i class="bi bi-table"></i></div><div class="pl">Extract</div></div><div class="pc"></div>
+  <div class="ps"><div class="pd"><i class="bi bi-shield-check"></i></div><div class="pl">Risk</div></div><div class="pc"></div>
+  <div class="ps"><div class="pd"><i class="bi bi-file-earmark-text"></i></div><div class="pl">Report</div></div>
+</div>
+<div class="wrap">
+  <h1>Verify Document Classification</h1>
+  <p class="sub">Review AI predictions. Correct any category before extraction begins.</p>
+  <div class="info-bar"><i class="bi bi-info-circle me-1"></i><strong>Human-in-the-Loop:</strong> Override any incorrect category using the dropdown, then confirm.</div>
+  <form action="/api/entity/{{ entity_id }}/confirm_classification" method="POST">
+    <div class="card mb-3">
+      <table>
+        <thead><tr><th>Filename</th><th>AI Prediction</th><th>Confidence</th><th>Override Category</th></tr></thead>
+        <tbody>
+          {% for doc in documents %}
+          <tr>
+            <td><i class="bi bi-file-earmark-text me-1" style="color:var(--primary)"></i><strong>{{ doc.filename }}</strong></td>
+            <td><span style="color:var(--green);font-weight:600">{{ doc.category }}</span></td>
+            <td>
+              <div class="bar-track"><div class="bar-fill" style="width:{{ (doc.confidence*100)|round }}%"></div></div>
+              <span class="conf-txt">{{ (doc.confidence*100)|round(0)|int }}%</span>
+            </td>
+            <td>
+              <select class="cat" name="category_{{ doc.id }}">
+                {% for c in ['Annual Report','Asset Liability Management (ALM)','Shareholding Pattern','Borrowing Profile','Portfolio Cuts'] %}
+                <option {% if c==doc.category %}selected{% endif %}>{{ c }}</option>{% endfor %}
+              </select>
+            </td>
+          </tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button type="submit" class="btn-confirm"><i class="bi bi-check2-circle"></i>Confirm &amp; Extract Data</button>
+    </div>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

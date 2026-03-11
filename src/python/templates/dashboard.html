@@ -1,328 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliCredit AI</title>
-    <!-- Modern Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{{ data.entity.company_name }} — Credit Report | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F8FAFC;--white:#fff;--border:#E2E8F0;
+  --primary:#1E40AF;--green:#059669;--amber:#D97706;--red:#DC2626;--blue:#3B82F6;
+  --text:#0F172A;--text2:#334155;--muted:#64748B;--muted2:#94A3B8;
+}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* Topbar */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.brand{font-size:.88rem;font-weight:700;color:var(--primary);}
+.brand sup{font-size:.6rem;color:var(--muted);}
+.top-right{display:flex;align-items:center;gap:.5rem;}
+.btn-dl{font-size:.74rem;padding:.35rem .9rem;border-radius:5px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:.35rem;border:1px solid;}
+.btn-pdf{border-color:#fecaca;color:var(--red);background:#fef2f2;}
+.btn-pdf:hover{background:#fee2e2;color:var(--red);}
+.btn-docx{border-color:#bfdbfe;color:var(--primary);background:#eff6ff;}
+.btn-docx:hover{background:#dbeafe;color:var(--primary);}
+.btn-new{background:var(--primary);color:#fff;border:none;font-size:.74rem;padding:.35rem .9rem;border-radius:5px;font-weight:700;text-decoration:none;}
+.btn-new:hover{background:#1e3a8a;color:#fff;}
+
+.main{max-width:1380px;margin:0 auto;padding:1.5rem;}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.4rem;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-tl{border-top:3px solid var(--primary);}
+.card-tg{border-top:3px solid var(--green);}
+.card-ta{border-top:3px solid var(--amber);}
+.card-tr{border-top:3px solid var(--red);}
+.section-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.25rem;}
+.card-title{font-size:.95rem;font-weight:700;margin-bottom:.9rem;color:var(--text);}
+
+/* Entity header */
+.entity-hd{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.8rem;padding:1.2rem 0 .8rem;}
+.entity-name{font-size:1.5rem;font-weight:800;line-height:1.2;}
+.entity-meta{font-size:.74rem;color:var(--muted);margin-top:.3rem;}
+
+/* Recommendation badges */
+.badge-approve{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:6px;padding:5px 14px;font-weight:700;font-size:.82rem;}
+.badge-review {background:#fffbeb;color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:5px 14px;font-weight:700;font-size:.82rem;}
+.badge-reject {background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:6px;padding:5px 14px;font-weight:700;font-size:.82rem;}
+
+/* Pipeline stepper */
+.pipe{display:flex;align-items:center;gap:0;overflow-x:auto;padding:.4rem 0;}
+.pi{display:flex;flex-direction:column;align-items:center;flex:1;min-width:70px;}
+.pdot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--bg);color:var(--muted2);display:flex;align-items:center;justify-content:center;font-size:.76rem;transition:all .3s;}
+.pdot.completed,.pdot.done{background:var(--green);border-color:var(--green);color:#fff;}
+.pdot.running{background:var(--amber);border-color:var(--amber);color:#fff;animation:pp 1.5s infinite;}
+.pdot.failed{background:var(--red);border-color:var(--red);color:#fff;}
+@keyframes pp{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.3);}60%{box-shadow:0 0 0 7px rgba(217,119,6,0);}}
+.plbl{font-size:.57rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--muted2);margin-top:4px;text-align:center;}
+.plbl.completed,.plbl.done{color:var(--green);}
+.plbl.running{color:var(--amber);}
+.pconn{flex:1;height:1px;background:var(--border);margin-bottom:18px;}
+.pconn.done,.pconn.completed{background:var(--green);}
+
+/* KPIs */
+.kpi-big{font-size:2rem;font-weight:800;line-height:1;}
+.kpi-sub{font-size:.72rem;color:var(--muted);margin-top:2px;}
+
+/* Five C's bars */
+.cbar{margin-bottom:.8rem;}
+.crow{display:flex;justify-content:space-between;font-size:.77rem;margin-bottom:3px;}
+.ctrack{height:5px;background:var(--border);border-radius:999px;overflow:hidden;}
+.cfill{height:100%;border-radius:999px;transition:width 1.2s ease;}
+.cnote{font-size:.68rem;color:var(--muted);margin-top:2px;}
+
+/* XAI drivers */
+.driver{display:flex;align-items:flex-start;gap:.55rem;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.81rem;}
+.driver:last-child{border-bottom:none;}
+.d-pos{color:var(--green);flex-shrink:0;margin-top:2px;}
+.d-neg{color:var(--red);flex-shrink:0;margin-top:2px;}
+
+/* Ratio bars */
+.rrow{display:flex;align-items:center;gap:.7rem;margin-bottom:.65rem;}
+.rlbl{width:140px;font-size:.74rem;color:var(--muted);flex-shrink:0;}
+.rtrack{flex:1;height:5px;background:var(--border);border-radius:999px;overflow:hidden;}
+.rfill{height:100%;border-radius:999px;}
+.rval{width:52px;text-align:right;font-size:.76rem;font-weight:600;flex-shrink:0;}
+
+/* SWOT */
+.swot-S{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:.8rem 1rem;}
+.swot-W{background:#fef2f2;border:1px solid #fecaca;border-radius:7px;padding:.8rem 1rem;}
+.swot-O{background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:.8rem 1rem;}
+.swot-T{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:.8rem 1rem;}
+.swot-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:.4rem;}
+.swot-S .swot-title{color:#065f46;} .swot-W .swot-title{color:#991b1b;}
+.swot-O .swot-title{color:#1e40af;} .swot-T .swot-title{color:#92400e;}
+.swot-S li,.swot-W li,.swot-O li,.swot-T li{font-size:.75rem;color:var(--text2);margin-bottom:2px;}
+
+/* Doc inspector */
+.doc-row{display:flex;align-items:center;gap:.7rem;padding:.6rem 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.doc-row:last-child{border-bottom:none;}
+.doc-row:hover{background:#f8fafc;}
+.doc-fname{font-size:.82rem;font-weight:600;flex:1;}
+.doc-cat{font-size:.7rem;color:var(--muted);}
+.doc-ok{font-size:.66rem;padding:1px 8px;border-radius:20px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
+.doc-proc{font-size:.66rem;padding:1px 8px;border-radius:20px;background:#fffbeb;color:#92400e;border:1px solid #fde68a;}
+.btn-insp{font-size:.68rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:4px;padding:2px 8px;cursor:pointer;flex-shrink:0;}
+.btn-insp:hover{border-color:var(--primary);color:var(--primary);}
+
+/* News cards */
+.news-card{border:1px solid var(--border);border-left:3px solid transparent;border-radius:7px;padding:.7rem .85rem;margin-bottom:.5rem;background:var(--white);}
+.news-card.positive{border-left-color:var(--green);}
+.news-card.negative{border-left-color:var(--red);}
+.news-card.neutral{border-left-color:var(--muted2);}
+.news-title{font-size:.79rem;font-weight:600;line-height:1.3;}
+.news-snip{font-size:.71rem;color:var(--muted);margin-top:2px;}
+.sent{font-size:.62rem;padding:1px 7px;border-radius:20px;font-weight:600;}
+.sent.positive{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
+.sent.negative{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
+.sent.neutral{background:#f8fafc;color:var(--muted);border:1px solid var(--border);}
+
+/* Narrative */
+.narrative-box{background:#f8fafc;border:1px solid var(--border);border-radius:7px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.75;color:var(--text2);}
+
+/* Download */
+.dl-footer{display:flex;gap:1rem;justify-content:center;padding:2rem 0 .5rem;}
+.btn-dl-big{padding:.65rem 1.8rem;border-radius:7px;font-weight:700;font-size:.86rem;text-decoration:none;display:flex;align-items:center;gap:.45rem;border:1px solid;}
+.btn-dl-big.pdf{border-color:#fecaca;color:var(--red);background:#fef2f2;}
+.btn-dl-big.pdf:hover{background:#fee2e2;color:var(--red);}
+.btn-dl-big.docx{border-color:#bfdbfe;color:var(--primary);background:#eff6ff;}
+.btn-dl-big.docx:hover{background:#dbeafe;color:var(--primary);}
+
+/* Modal */
+.modal-content{background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.12);}
+.modal-header{border-bottom:1px solid var(--border);}
+.modal-title{font-size:.93rem;font-weight:700;}
+.insp-step{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:.72rem 1rem;margin-bottom:.55rem;}
+.insp-st-title{font-size:.8rem;font-weight:600;margin-bottom:.3rem;}
+.insp-done{color:var(--green);font-size:.7rem;font-weight:600;}
+.insp-pend{color:var(--muted);font-size:.7rem;}
+.insp-detail{font-size:.73rem;color:var(--muted);margin-top:.3rem;}
+.insp-field-row{display:flex;justify-content:space-between;font-size:.73rem;padding:2px 0;}
+.insp-fk{color:var(--muted);}
+.insp-fv{color:var(--green);font-weight:600;}
+
+@media(max-width:768px){.entity-name{font-size:1.1rem;}}
+</style>
 </head>
 <body>
-    <div class="app-container">
-        
-        <header class="navbar">
-            <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 17L12 22L22 17" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 12L12 17L22 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>IntelliCredit AI</span>
-            </div>
-            <div class="user-profile">Corporate Lending Agent</div>
-        </header>
 
-        <main class="main-content">
-            <div class="header-section">
-                <h1>Credit Appraisal Dashboard</h1>
-                <p>Upload borrower documents to instantly generate an AI-powered Credit Appraisal Memo.</p>
-            </div>
+<!-- Topbar -->
+<div class="topbar">
+  <div class="brand"><i class="bi bi-cpu-fill me-1" style="color:var(--green)"></i>Intelli·Credit AI <sup>| {{ data.entity.company_name }}</sup></div>
+  <div class="top-right">
+    <a href="{{ pdf_url }}" class="btn-dl btn-pdf"><i class="bi bi-file-earmark-pdf"></i>PDF</a>
+    <a href="{{ docx_url }}" class="btn-dl btn-docx"><i class="bi bi-file-earmark-word"></i>DOCX</a>
+    <a href="/onboarding" class="btn-new">+ New Entity</a>
+  </div>
+</div>
 
-            {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                <div class="flash-messages">
-                  {% for message in messages %}
-                    <div class="flash-alert">{{ message }}</div>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            {% endwith %}
+<div class="main">
 
-            <div class="grid-layout">
-                <!-- Left Column: Upload Form -->
-                <div class="left-panel">
-                    <div class="card glass-card">
-                        <div class="card-header">
-                            <h2>Document Ingestion</h2>
-                        </div>
-                        <form action="/" method="POST" enctype="multipart/form-data" class="upload-form">
-                            
-                            <div class="form-group">
-                                <label for="annual_report">Annual Report (PDF)<span class="required">*</span></label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="annual_report" name="annual_report" accept=".pdf" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="gst_csv">GST Returns (CSV)<span class="required">*</span></label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="gst_csv" name="gst_csv" accept=".csv" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="bank_csv">Bank Statements (CSV)<span class="required">*</span></label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="bank_csv" name="bank_csv" accept=".csv" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="news_files">External News/Intel (Text Files) <span class="optional">(Optional)</span></label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="news_files" name="news_files" accept=".txt" multiple>
-                                </div>
-                                <span class="help-text">Upload raw .txt news articles for sentiment analysis.</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="officer_notes">Credit Officer Notes <span class="optional">(Optional)</span></label>
-                                <textarea id="officer_notes" name="officer_notes" rows="3" placeholder="e.g. Factory running at low capacity, recent management changes..." style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical; margin-top: 5px;"></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">
-                                <span>Run AI Risk Analysis</span>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Right Column: Results Dashboard (Shown conditionally if analysis is done) -->
-                <div class="right-panel">
-                    {% if total_score %}
-                    <div class="results-container slide-up">
-                        
-                        <!-- Top Action Bar -->
-                        <div class="results-header">
-                            <h2>Analysis Results for <span style="color: #4F46E5;">{{ organization_name }}</span></h2>
-                            <a href="{{ url_for('download_cam') }}" class="btn btn-secondary">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                                Download CAM
-                            </a>
-                        </div>
-
-                        <!-- Hero Score Card -->
-                        <div class="card score-card {{ decision|lower }}" style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
-                            <div style="flex: 1;">
-                                <div class="score-header" style="justify-content: flex-start; gap: 16px;">
-                                    <span class="label">Total Risk Score</span>
-                                    <div class="badge decision-badge">{{ decision }}</div>
-                                </div>
-                                <div class="score-body" style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap; margin-top: 10px;">
-                                    <div class="score-number">{{ total_score }}<span>/100</span></div>
-                                    <div style="display: flex; gap: 32px;">
-                                        <div class="interest-rate" style="text-align: left;">
-                                            <span class="label">Suggested Interest:</span>
-                                            <span class="value">{{ interest }}</span>
-                                        </div>
-                                        <div class="interest-rate" style="text-align: left;">
-                                            <span class="label">Suggested Limit:</span>
-                                            <span class="value">{{ limit }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="width: 160px; height: 160px; flex-shrink: 0;">
-                                <canvas id="scoreGauge"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Decision Explanation -->
-                        <div class="card mt-4" style="border-left: 4px solid var(--primary); background: #eff6ff;">
-                            <h3>Decision Rationale</h3>
-                            <p style="color: var(--text-primary); line-height: 1.5;">{{ explanation }}</p>
-                        </div>
-
-                        <!-- 5 Cs Breakdown -->
-                        <div class="card">
-                            <h3>The Five Cs Assessment</h3>
-                            <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-                                <canvas id="fiveCsRadar"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Financials -->
-                        <div class="card">
-                            <h3>Financial Integrity Snapshot</h3>
-                            <div class="fin-grid">
-                                <div class="fin-stat">
-                                    <span class="stat-label">Net Profit (Cr)</span>
-                                    <span class="stat-value">₹{{ financials.get('Net Profit', 'N/A') }}</span>
-                                </div>
-                                <div class="fin-stat">
-                                    <span class="stat-label">ROA</span>
-                                    <span class="stat-value">{{ financials.get('ROA', 'N/A') }}%</span>
-                                </div>
-                                <div class="fin-stat">
-                                    <span class="stat-label">CAR</span>
-                                    <span class="stat-value">{{ financials.get('Capital Adequacy Ratio', 'N/A') }}%</span>
-                                </div>
-                                <div class="fin-stat">
-                                    <span class="stat-label">Net NPA</span>
-                                    <span class="stat-value">{{ financials.get('Net NPA', 'N/A') }}%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- GST & Bank Reconciliation -->
-                        <div class="card mt-4">
-                            <h3>GST vs Bank Reconciliation</h3>
-                            <div style="width: 100%; height: 300px; margin-bottom: 20px;">
-                                <canvas id="gstBankBar"></canvas>
-                            </div>
-                            <div class="fin-grid">
-                                <div class="fin-stat">
-                                    <span class="stat-label">Mismatched Months (>15%)</span>
-                                    <span class="stat-value">{{ gst_bank_results.get('high_mismatch_months', []) | length }}</span>
-                                </div>
-                                <div class="fin-stat">
-                                    <span class="stat-label">Repeated Counterparties</span>
-                                    <span class="stat-value">{{ gst_bank_results.get('suspicious_counterparties', []) | length }}</span>
-                                </div>
-                                <div class="fin-stat">
-                                    <span class="stat-label">ML Anomalies Detected</span>
-                                    <span class="stat-value">{{ gst_bank_results.get('anomaly_months', []) | length }}</span>
-                                </div>
-                            </div>
-                            {% if gst_bank_results.get('anomaly_months') %}
-                            <div class="alert mt-3" style="border-left-color: var(--danger); background: #fef2f2; color: var(--danger);">
-                                <strong>ML Anomalies Flagged in:</strong> {{ gst_bank_results.get('anomaly_months') | join(', ') }}
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <!-- External Intelligence -->
-                        <div class="card mt-4">
-                            <h3>External News & Intelligence</h3>
-                            <div class="fin-grid">
-                                <div class="fin-stat">
-                                    <span class="stat-label">Sentiment</span>
-                                    <span class="stat-value">{{ news_insights.get('sentiment_score', 'N/A') }}</span>
-                                </div>
-                                <div class="fin-stat">
-                                    <span class="stat-label">Litigation Risk</span>
-                                    <span class="stat-value">{{ "Yes" if news_insights.get('litigation_detected') else "No" }}</span>
-                                </div>
-                            </div>
-                            {% if news_insights.get('risk_keywords') %}
-                            <div class="alert mt-3" style="background: #eff6ff; border-left: 4px solid var(--primary);">
-                                <strong>Detected Risk Keywords:</strong> <span style="color: var(--text-primary);">{{ news_insights.get('risk_keywords') | join(', ') }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
-
-                    </div>
-                    {% else %}
-                    <!-- Empty State -->
-                    <div class="empty-state card">
-                        <div class="empty-icon">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        </div>
-                        <h3>Awaiting Documents</h3>
-                        <p>Upload the borrower's annual report, GST returns, and bank statements on the left to begin the intelligent risk appraisal process.</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </main>
+  <!-- ① Entity Header -->
+  <div class="entity-hd">
+    <div>
+      <div class="entity-name">{{ data.entity.company_name }}</div>
+      <div class="entity-meta">
+        CIN: {{ data.entity.get('cin','—') }} &nbsp;·&nbsp;
+        PAN: {{ data.entity.get('pan','—') }} &nbsp;·&nbsp;
+        Sector: {{ data.entity.get('sector','—') }} / {{ data.entity.get('subsector','—') }} &nbsp;·&nbsp;
+        Loan: ₹{{ data.entity.get('loan_amount','—') }} Cr ({{ data.entity.get('loan_type','—') }}, {{ data.entity.get('loan_tenure','—') }} mo @ {{ data.entity.get('interest_rate','—') }}%)
+      </div>
     </div>
-    
-    <!-- Render Charts if Analysis is Done -->
-    {% if total_score %}
-    <script>
-        // 1. Radar Chart for Five Cs
-        const radarContext = document.getElementById('fiveCsRadar').getContext('2d');
-        new Chart(radarContext, {
-            type: 'radar',
-            data: {
-                labels: ['Character (25)', 'Capacity (20)', 'Capital (15)', 'Collateral (15)', 'Conditions (25)'],
-                datasets: [{
-                    label: 'Score Allocation',
-                    data: [{{ character }}, {{ capacity }}, {{ capital }}, {{ collateral }}, {{ conditions }}],
-                    backgroundColor: 'rgba(79, 70, 229, 0.2)',
-                    borderColor: 'rgba(79, 70, 229, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(79, 70, 229, 1)'
-                }]
-            },
-            options: {
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 25,
-                        ticks: { stepSize: 5 }
-                    }
-                }
-            }
-        });
+    <div>
+      {% set rec=data.risk_profile.recommendation %}
+      {% if 'Approve' in rec %}<span class="badge-approve"><i class="bi bi-check-circle me-1"></i>{{ rec }}</span>
+      {% elif 'Reject' in rec %}<span class="badge-reject"><i class="bi bi-x-circle me-1"></i>{{ rec }}</span>
+      {% else %}<span class="badge-review"><i class="bi bi-exclamation-triangle me-1"></i>{{ rec }}</span>{% endif %}
+    </div>
+  </div>
 
-        // 2. Bar Chart for GST vs Bank
-        const gstBankData = {{ gst_bank_results.get('mismatch_table', []) | tojson }};
-        if (gstBankData && gstBankData.length > 0) {
-            const labels = gstBankData.map(row => row.month);
-            const gstData = gstBankData.map(row => row.gst_revenue);
-            const bankData = gstBankData.map(row => row.bank_inflow);
+  <!-- ② Pipeline Progress -->
+  <div class="card mb-3">
+    <div class="section-label">Analysis Pipeline</div>
+    <div class="pipe" id="pp">
+      {% set sm=[
+        ('documents_uploaded','cloud-upload','Upload',pipeline.get('documents_uploaded','completed')),
+        ('classification','tags','Classify',pipeline.get('classification','completed')),
+        ('extraction','table','Extract',pipeline.get('extraction','completed')),
+        ('research','globe2','Research',pipeline.get('research','completed')),
+        ('risk_model','shield-check','Risk',pipeline.get('risk_model','completed')),
+        ('report_generation','file-earmark-text','Report',pipeline.get('report_generation','completed')),
+      ]%}
+      {% for sid,icon,lbl,st in sm %}
+      <div class="pi">
+        <div class="pdot {{ st }}" id="dp-{{ sid }}">
+          {% if st in ('completed','done') %}<i class="bi bi-check-lg"></i>
+          {% elif st=='failed' %}<i class="bi bi-x-lg"></i>
+          {% else %}<i class="bi bi-{{ icon }}"></i>{% endif %}
+        </div>
+        <div class="plbl {{ st }}">{{ lbl }}</div>
+      </div>
+      {% if not loop.last %}<div class="pconn {{ st }}" id="dc-{{ loop.index }}"></div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
 
-            const barContext = document.getElementById('gstBankBar').getContext('2d');
-            new Chart(barContext, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'GST Declared',
-                            data: gstData,
-                            backgroundColor: 'rgba(59, 130, 246, 0.7)' // Blue
-                        },
-                        {
-                            label: 'Bank Received',
-                            data: bankData,
-                            backgroundColor: 'rgba(16, 185, 129, 0.7)' // Green
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        }
+  <!-- ③ Document Processing Panel -->
+  <div class="card card-tl mb-3">
+    <div class="section-label">Document Processing</div>
+    <div class="card-title">Uploaded Documents</div>
+    <div id="docList"><div style="color:var(--muted);font-size:.8rem">Loading…</div></div>
+  </div>
 
-        // 3. Simple Doughnut Gauge for Total Score
-        const gaugeContext = document.getElementById('scoreGauge').getContext('2d');
-        const score = {{ total_score }};
-        const remainder = 100 - score;
-        const color = score > 70 ? '#10B981' : (score > 50 ? '#F59E0B' : '#EF4444');
+  <!-- ④ KPI Row: PD Gauge + Loan + OSINT -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-4">
+      <div class="card card-tg h-100 text-center">
+        <div class="section-label">Probability of Default</div>
+        {% set pd=(data.risk_profile.default_probability*100)|round(1) %}
+        <div class="kpi-big mt-2 {% if pd<25 %}text-success{% elif pd<55 %}text-warning{% else %}text-danger{% endif %}">{{ pd }}%</div>
+        <div class="kpi-sub">{{ data.risk_profile.risk_category }}</div>
+        <canvas id="pdGauge" height="110" class="mt-2"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="section-label">Loan Request</div>
+        <div class="kpi-big" style="color:var(--primary)">₹{{ data.entity.get('loan_amount','—') }} Cr</div>
+        <div class="kpi-sub">{{ data.entity.get('loan_type','—') }} loan</div>
+        <hr style="border-color:var(--border);margin:.8rem 0">
+        {% for lbl,key in [('Tenure','loan_tenure'),('Interest Rate','interest_rate'),('Purpose','purpose')] %}
+        <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.3rem">
+          <span style="color:var(--muted)">{{ lbl }}</span>
+          <span style="font-weight:600;text-align:right;max-width:180px">{{ data.entity.get(key,'—') }}{% if key=='loan_tenure' %} mo{% elif key=='interest_rate' %}%{% endif %}</span>
+        </div>{% endfor %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card {% if data.research_signals.triangulation_flag %}card-tr{% else %}card-tg{% endif %} h-100">
+        <div class="section-label">OSINT Intelligence</div>
+        <div class="kpi-big" style="color:var(--primary)">{{ data.research_signals.articles|length }}</div>
+        <div class="kpi-sub">signals scraped</div>
+        <hr style="border-color:var(--border);margin:.8rem 0">
+        {% for lbl,val,cls,_ in [
+          ('Negative Signals', data.research_signals.negative_hits|default(0), 'text-danger', ''),
+          ('Litigation Flag', 'Detected' if data.research_signals.litigation_detected else 'Clean',
+           'text-danger' if data.research_signals.litigation_detected else 'text-success', ''),
+        ] %}
+        <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.3rem">
+          <span style="color:var(--muted)">{{ lbl }}</span><b class="{{ cls }}">{{ val }}</b>
+        </div>{% endfor %}
+        <div class="mt-2">
+          {% if data.research_signals.triangulation_flag %}
+            <span style="font-size:.7rem;background:#fef2f2;color:var(--red);border:1px solid #fecaca;padding:2px 9px;border-radius:20px;font-weight:600;">⚠ High External Risk</span>
+          {% else %}
+            <span style="font-size:.7rem;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;padding:2px 9px;border-radius:20px;font-weight:600;">✔ Standard External Profile</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
-        new Chart(gaugeContext, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [score, remainder],
-                    backgroundColor: [color, '#E5E7EB'],
-                    borderWidth: 0,
-                    circumference: 180,
-                    rotation: 270
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    tooltip: { enabled: false }
-                }
-            }
-        });
-    </script>
-    {% endif %}
+  <!-- ⑤ Five C's + XAI Drivers -->
+  <div class="row g-3 mb-3">
+    <div class="col-lg-6">
+      <div class="card card-tl h-100">
+        <div class="section-label">Credit Assessment</div>
+        <div class="card-title">Five C's Analysis</div>
+        {% set five=data.risk_profile.get('five_cs',{}) %}
+        {% for key,lbl,clr in [('character','Character','#1E40AF'),('capacity','Capacity','#059669'),('capital','Capital','#D97706'),('collateral','Collateral','#7C3AED'),('conditions','Conditions','#EC4899')] %}
+        {% set item=five.get(key,{'score':5,'note':'—'}) %}
+        <div class="cbar">
+          <div class="crow"><span class="fw-semibold">{{ lbl }}</span><span style="color:{{ clr }};font-weight:600">{{ item.score }}/10</span></div>
+          <div class="ctrack"><div class="cfill" style="width:{{ (item.score/10*100)|round }}%;background:{{ clr }}"></div></div>
+          <div class="cnote">{{ (item.note or '')[:85] }}</div>
+        </div>{% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card card-ta h-100">
+        <div class="section-label">Explainable AI</div>
+        <div class="card-title">Key Decision Drivers</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-bottom:.6rem">
+          <i class="bi bi-arrow-down-circle me-1" style="color:var(--green)"></i>reduces risk &nbsp;
+          <i class="bi bi-arrow-up-circle me-1" style="color:var(--red)"></i>increases risk
+        </div>
+        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin-bottom:.3rem">Positive Drivers</div>
+        {% for d in data.risk_profile.get('positive_drivers',[]) %}
+        <div class="driver"><i class="bi bi-arrow-down-circle-fill d-pos"></i><span>{{ d }}</span></div>
+        {% else %}<div style="font-size:.77rem;color:var(--muted)">No positive drivers.</div>{% endfor %}
+        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--red);margin-top:.7rem;margin-bottom:.3rem">Risk Drivers</div>
+        {% for d in data.risk_profile.get('risk_drivers',[]) %}
+        <div class="driver"><i class="bi bi-arrow-up-circle-fill d-neg"></i><span>{{ d }}</span></div>
+        {% else %}<div style="font-size:.77rem;color:var(--muted)">No risk drivers detected.</div>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ Ratios + Narrative -->
+  <div class="row g-3 mb-3">
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="section-label">Quantitative Metrics</div>
+        <div class="card-title">Financial Ratios</div>
+        {% set rd=[('debt_equity_ratio','Debt / Equity',3.0,'lower'),('current_ratio','Current Ratio',3.0,'higher'),('interest_coverage','Interest Coverage',10.0,'higher'),('dscr','DSCR',3.0,'higher'),('roa','Return on Assets',0.15,'higher'),('profit_margin','Profit Margin',0.3,'higher'),('cashflow_debt_coverage','CF / Debt',1.0,'higher')] %}
+        {% for key,lbl,mx,dir in rd %}
+        {% set val=data.ratios.get(key,0)|float %}
+        {% set pct=[[((val/mx)*100)|round,0]|max,100]|min %}
+        {% if dir=='higher' %}{% set clr='var(--green)' if val>=mx*0.66 else ('var(--amber)' if val>=mx*0.33 else 'var(--red)') %}
+        {% else %}{% set clr='var(--green)' if val<=mx*0.33 else ('var(--amber)' if val<=mx*0.66 else 'var(--red)') %}{% endif %}
+        <div class="rrow">
+          <div class="rlbl">{{ lbl }}</div>
+          <div class="rtrack"><div class="rfill" style="width:{{ pct }}%;background:{{ clr }}"></div></div>
+          <div class="rval" style="color:{{ clr }}">
+            {% if key in ('roa','profit_margin') %}{{ (val*100)|round(1) }}%{% else %}{{ val }}{% endif %}
+          </div>
+        </div>{% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div class="card card-tg h-100">
+        <div class="section-label">GenAI Synthesis</div>
+        <div class="card-title">AI Analyst Narrative</div>
+        <div class="narrative-box">
+          {% if data.get('analyst_narrative') %}
+            {% for para in data.analyst_narrative.split('\n\n') %}<p style="margin-bottom:.7rem">{{ para }}</p>{% endfor %}
+          {% else %}<p style="color:var(--muted)">Analyst narrative unavailable. Configure GEMINI_API_KEY.</p>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ SWOT -->
+  <div class="card mb-3">
+    <div class="section-label">GenAI Assisted</div>
+    <div class="card-title">SWOT Analysis</div>
+    <div class="row g-2">
+      {% for cat,cls,icon in [('Strengths','swot-S','check-circle-fill'),('Weaknesses','swot-W','exclamation-triangle-fill'),('Opportunities','swot-O','rocket-takeoff-fill'),('Threats','swot-T','shield-exclamation')] %}
+      <div class="col-md-6">
+        <div class="{{ cls }}">
+          <div class="swot-title"><i class="bi bi-{{ icon }} me-1"></i>{{ cat }}</div>
+          <ul class="mb-0 ps-3">{% for pt in data.swot.get(cat,['N/A']) %}<li>{{ pt }}</li>{% endfor %}</ul>
+        </div>
+      </div>{% endfor %}
+    </div>
+  </div>
+
+  <!-- ⑧ AI Suggested Facility Terms (Gap 5) -->
+  {% set st=data.get('suggested_terms',{}) %}
+  <div class="card mb-3" style="border-top:3px solid var(--primary)">
+    <div class="section-label">Decision Logic</div>
+    <div class="card-title">AI Suggested Facility Terms</div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:1rem">
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:.6rem">Loan Amount</div>
+          <div style="display:flex;align-items:baseline;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:1.6rem;font-weight:800;color:var(--primary)">₹{{ st.get('suggested_amount','—') }} Cr</span>
+            <span style="font-size:.76rem;color:var(--muted)">vs ₹{{ st.get('requested_amount','—') }} Cr requested</span>
+          </div>
+          {% if st.get('suggested_amount') and st.get('requested_amount') and st.suggested_amount < st.requested_amount %}
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:.4rem .7rem;font-size:.72rem;color:#92400e">⚠ {{ st.get('amount_note','') }}</div>
+          {% elif st.get('suggested_amount',0)==0 %}
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:5px;padding:.4rem .7rem;font-size:.72rem;color:#991b1b">✗ {{ st.get('amount_note','') }}</div>
+          {% else %}
+          <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:5px;padding:.4rem .7rem;font-size:.72rem;color:#065f46">✔ {{ st.get('amount_note','') }}</div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:1rem">
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:.6rem">Interest Rate</div>
+          <div style="display:flex;align-items:baseline;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:1.6rem;font-weight:800;color:var(--amber)">{{ st.get('suggested_rate','—') }}%</span>
+            <span style="font-size:.76rem;color:var(--muted)">vs {{ st.get('requested_rate','—') }}% requested</span>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted)">{{ st.get('rate_note','') }}</div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div style="background:#f8fafc;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:6px;padding:.7rem 1rem;font-size:.8rem;color:var(--text2)">
+          <b style="color:var(--primary)"><i class="bi bi-chat-quote me-1"></i>Decision Rationale:</b>
+          {{ st.get('rejection_reason','—') }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑨ Credit Officer Analyst Notes (Gap 1) -->
+  <div class="card mb-3" style="border-top:3px solid var(--amber)">
+    <div class="section-label">Human-in-the-Loop</div>
+    <div class="card-title">Credit Officer Analyst Notes</div>
+    <p style="font-size:.79rem;color:var(--muted);margin-bottom:.8rem">
+      Enter qualitative observations (e.g. factory operating at 40% capacity, management change, legal dispute).
+      The AI will adjust the PD score based on note sentiment.
+    </p>
+    <textarea id="notesTA" rows="4" placeholder="e.g. Factory visit: plant running at 55% capacity. Management mentioned order-book recovery in Q3. No adverse observations at site." style="width:100%;border:1px solid var(--border);border-radius:7px;padding:.6rem .8rem;font-size:.82rem;font-family:'Inter',sans-serif;resize:vertical;outline:none;color:var(--text)">{{ data.get('analyst_notes','') }}</textarea>
+    <div style="display:flex;align-items:center;gap:.8rem;margin-top:.6rem;flex-wrap:wrap">
+      <button onclick="saveNotes()" id="noteBtn" style="background:var(--amber);color:#fff;font-weight:700;font-size:.82rem;border:none;padding:.5rem 1.4rem;border-radius:6px;cursor:pointer">
+        <i class="bi bi-cpu me-1"></i>Save &amp; Re-score
+      </button>
+      <span id="noteRes" style="font-size:.78rem;color:var(--muted)"></span>
+    </div>
+  </div>
+
+  <!-- ⑩ India Intelligence (Gap 2 + Gap 4 combined) -->
+  {% set ind=data.get('india_signals',{}) %}
+  {% set rs=data.research_signals %}
+  <div class="card mb-3" style="border-top:3px solid {% if ind.get('has_any_flag') or rs.regulatory_risk_flag %}var(--red){% else %}var(--green){% endif %}">
+    <div class="section-label">India-Specific Intelligence</div>
+    <div class="card-title">India Risk Signals</div>
+    <div class="row g-3">
+      <!-- Research signals column -->
+      <div class="col-md-6">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:.5rem">OSINT Risk Scores</div>
+        {% for lbl, val, cls in [
+          ('Litigation Score', (rs.get('litigation_score',0)|string)+'/10', 'text-danger' if rs.get('litigation_score',0)>4 else 'text-success'),
+          ('Regulatory Risk', 'Detected' if rs.get('regulatory_risk_flag') else 'Clean', 'text-danger' if rs.get('regulatory_risk_flag') else 'text-success'),
+          ('Rating Action', rs.get('rating_action','Stable'), 'text-danger' if 'Downgrade' in rs.get('rating_action','') else 'text-success'),
+          ('Litigation Detected', 'Yes' if rs.get('litigation_detected') else 'No', 'text-danger' if rs.get('litigation_detected') else 'text-success'),
+        ] %}
+        <div style="display:flex;justify-content:space-between;font-size:.79rem;padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">{{ lbl }}</span><b class="{{ cls }}">{{ val }}</b>
+        </div>{% endfor %}
+      </div>
+      <!-- India-specific signals column -->
+      <div class="col-md-6">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:.5rem">India Risk Signals</div>
+        {% set india_risk=ind.get('india_risk_score',0) %}
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem">
+          <div style="font-size:1.5rem;font-weight:800;color:{% if india_risk>5 %}var(--red){% elif india_risk>2 %}var(--amber){% else %}var(--green){% endif %}">{{ india_risk }}/10</div>
+          <div style="font-size:.74rem;color:var(--muted)">India-specific risk score</div>
+        </div>
+        {% for sig in ind.get('signals',['No India signals data available']) %}
+        <div style="font-size:.76rem;padding:.25rem 0;border-bottom:1px solid var(--border);color:{% if '⚠' in sig %}var(--red){% else %}var(--green){% endif %}">{{ sig }}</div>
+        {% endfor %}
+        {% if ind.get('revenue_inflation',{}).get('flag') %}
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:5px;padding:.4rem .7rem;font-size:.72rem;color:#991b1b;margin-top:.5rem">
+          GST Divergence: {{ ind.revenue_inflation.divergence_pct }}% — {{ ind.revenue_inflation.note[:90] }}
+        </div>{% endif %}
+        {% if ind.get('gstr_mismatch',{}).get('flag') %}
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:.4rem .7rem;font-size:.72rem;color:#92400e;margin-top:.4rem">
+          GSTR-2A/3B: {{ ind.gstr_mismatch.note }}
+        </div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑪ News Intelligence -->
+  <div class="card mb-3">
+    <div class="section-label">Secondary Research</div>
+    <div class="card-title">News Intelligence Feed</div>
+    {% if data.research_signals.macro_insights %}
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:.65rem 1rem;font-size:.75rem;color:var(--primary);margin-bottom:1rem">
+      <b><i class="bi bi-globe2 me-1"></i>Macro / Sector:</b> {{ data.research_signals.macro_insights[:280] }}
+    </div>{% endif %}
+    <div class="row g-2">
+      {% for art in data.research_signals.articles[:12] %}
+      {% set sc=art.sentiment_category|lower %}
+      <div class="col-md-6 col-lg-4">
+        <div class="news-card {{ sc }}">
+          <div class="d-flex justify-content-between align-items-start gap-1">
+            <div class="news-title">
+              {% if art.url %}<a href="{{ art.url }}" target="_blank" style="color:inherit;text-decoration:none">{{ art.title[:80] }}{% if art.title|length>80 %}…{% endif %}</a>
+              {% else %}{{ art.title[:80] }}{% endif %}
+            </div>
+            <span class="sent {{ sc }} flex-shrink-0">{{ art.sentiment_category }}</span>
+          </div>
+          {% if art.snippet %}<div class="news-snip">{{ art.snippet[:110] }}…</div>{% endif %}
+        </div>
+      </div>{% endfor %}
+      {% if not data.research_signals.articles %}
+      <div class="col-12 text-center" style="color:var(--muted);padding:1.5rem">No articles retrieved.</div>{% endif %}
+    </div>
+  </div>
+
+  <!-- ⑨ Download Footer -->
+  <div class="dl-footer">
+    <a href="{{ pdf_url }}" class="btn-dl-big pdf"><i class="bi bi-file-earmark-pdf"></i>Download CAM Report (PDF)</a>
+    <a href="{{ docx_url }}" class="btn-dl-big docx"><i class="bi bi-file-earmark-word"></i>Download CAM Report (DOCX)</a>
+  </div>
+
+</div><!-- /main -->
+
+<!-- Document Inspector Modal -->
+<div class="modal fade" id="docModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="mfn">Document Inspector</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="mb" style="padding:1.2rem"><div style="color:var(--muted);font-size:.82rem">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const EID={{data.entity.id}};
+const STAGES=["documents_uploaded","classification","extraction","research","risk_model","report_generation"];
+
+// Pipeline live poll
+function rp(){
+  fetch(`/api/pipeline_status/${EID}`)
+    .then(r=>r.json())
+    .then(d=>{
+      STAGES.forEach((s,i)=>{
+        const dot=document.getElementById('dp-'+s),con=document.getElementById('dc-'+(i+1));
+        if(!dot)return;
+        const st=d[s]||'pending';
+        dot.className=`pdot ${st}`;
+        if(st==='completed'||st==='done')dot.innerHTML='<i class="bi bi-check-lg"></i>';
+        if(con&&(st==='completed'||st==='done'))con.className='pconn done';
+      });
+    }).catch(()=>{});
+}
+rp();setInterval(rp,3000);
+
+// PD gauge
+const pdv={{(data.risk_profile.default_probability*100)|round(1)}};
+new Chart(document.getElementById('pdGauge'),{
+  type:'doughnut',
+  data:{datasets:[{
+    data:[pdv,100-pdv],
+    backgroundColor:[pdv<25?'#059669':pdv<55?'#D97706':'#DC2626','#E2E8F0'],
+    borderWidth:0,circumference:270,rotation:225
+  }]},
+  options:{cutout:'78%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:1100}}
+});
+
+// Doc panel
+fetch(`/api/entity/${EID}/docs_status`)
+  .then(r=>r.json())
+  .then(docs=>{
+    if(!docs||!docs.length){document.getElementById('docList').innerHTML='<div style="color:var(--muted);font-size:.8rem">No documents found.</div>';return;}
+    let html='';
+    docs.forEach(d=>{
+      const ok=d.status==='Classified'||d.status==='Verified';
+      html+=`<div class="doc-row" onclick="inspDoc('${d.filename}')">
+        <i class="bi bi-file-earmark-text" style="color:var(--primary)"></i>
+        <div class="flex-grow-1">
+          <div class="doc-fname">${d.filename}</div>
+          <div class="doc-cat">${d.category}</div>
+        </div>
+        <span class="${ok?'doc-ok':'doc-proc'}">${ok?'✔ Extracted':'⏳ Processing'}</span>
+        <span class="btn-insp">Inspect</span>
+      </div>`;
+    });
+    document.getElementById('docList').innerHTML=html;
+  }).catch(()=>{document.getElementById('docList').innerHTML='<div style="color:var(--muted);font-size:.8rem">Could not load.</div>';});
+
+// Inspector modal
+const modal=new bootstrap.Modal(document.getElementById('docModal'));
+function inspDoc(fname){
+  document.getElementById('mfn').textContent=fname;
+  document.getElementById('mb').innerHTML='<div style="color:var(--muted);font-size:.82rem">Loading…</div>';
+  modal.show();
+  fetch(`/api/entity/${EID}/doc_detail/${encodeURIComponent(fname)}`)
+    .then(r=>r.json())
+    .then(d=>{
+      let h=`<p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Processing trace for <b style="color:var(--text)">${d.filename}</b></p>`;
+      d.steps.forEach(s=>{
+        const ok=s.status==='completed';
+        h+=`<div class="insp-step"><div class="d-flex justify-content-between align-items-center"><div class="insp-st-title">Step ${s.step}: ${s.name}</div><span class="${ok?'insp-done':'insp-pend'}">${ok?'✔ Completed':'⬜ Pending'}</span></div>`;
+        if(typeof s.detail==='string'){h+=`<div class="insp-detail">${s.detail}</div>`;}
+        else if(Array.isArray(s.detail)){s.detail.forEach(r=>{h+=`<div class="insp-field-row"><span class="insp-fk">${r.field||r.ratio||''}</span><span class="insp-fv">${r.value||''}</span></div>`;});}
+        h+='</div>';
+      });
+      document.getElementById('mb').innerHTML=h;
+    }).catch(()=>{document.getElementById('mb').innerHTML='<div style="color:var(--muted)">Could not load detail.</div>';});
+}
+
+// Gap 1 — Analyst Notes: save & live re-score
+function saveNotes(){
+  const notes=document.getElementById('notesTA').value.trim();
+  if(!notes){document.getElementById('noteRes').textContent='Please enter a note.';return;}
+  const btn=document.getElementById('noteBtn');
+  btn.disabled=true;btn.textContent='Saving…';
+  fetch(`/api/entity/${EID}/notes`,{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({notes})
+  }).then(r=>r.json()).then(d=>{
+    btn.disabled=false;btn.innerHTML='<i class="bi bi-cpu me-1"></i>Save & Re-score';
+    if(d.success){
+      const pd=d.pd_adjusted?Math.round(d.pd_adjusted*1000)/10:'—';
+      document.getElementById('noteRes').innerHTML=
+        `<span style="color:var(--green)">✔ Saved — Adjusted PD: <b>${pd}%</b> | ${d.recommendation||''}</span>`;
+    } else {
+      document.getElementById('noteRes').innerHTML=
+        `<span style="color:var(--red)">Error: ${d.error||'Unknown'}</span>`;
+    }
+  }).catch(()=>{
+    btn.disabled=false;btn.innerHTML='<i class="bi bi-cpu me-1"></i>Save & Re-score';
+    document.getElementById('noteRes').innerHTML='<span style="color:var(--red)">Network error.</span>';
+  });
+}
+</script>
 </body>
 </html>

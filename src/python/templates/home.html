@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Intelli-Credit AI | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+:root{--bg:#F8FAFC;--white:#fff;--border:#E2E8F0;--primary:#1E40AF;--green:#059669;--amber:#D97706;--red:#DC2626;--text:#0F172A;--muted:#64748B;--muted2:#94A3B8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-size:.9rem;font-weight:700;color:var(--primary);letter-spacing:-.2px;}
+.brand-dot{color:var(--green);}
+.btn-new{background:var(--primary);color:#fff;border:none;font-size:.8rem;font-weight:600;padding:.45rem 1.1rem;border-radius:6px;text-decoration:none;display:flex;align-items:center;gap:.4rem;}
+.btn-new:hover{background:#1e3a8a;color:#fff;}
+.wrap{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem;}
+.page-hd{margin-bottom:1.5rem;}
+.page-hd h1{font-size:1.25rem;font-weight:700;margin-bottom:.2rem;}
+.page-hd p{font-size:.82rem;color:var(--muted);}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:.7rem 1.1rem;border-bottom:1px solid var(--border);text-align:left;background:var(--bg);}
+td{font-size:.84rem;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f1f5f9;}
+.badge-ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;font-size:.68rem;padding:2px 9px;border-radius:20px;font-weight:600;}
+.badge-pend{background:#f8fafc;color:var(--muted);border:1px solid var(--border);font-size:.68rem;padding:2px 9px;border-radius:20px;font-weight:600;}
+.link-view{color:var(--primary);font-size:.8rem;font-weight:600;text-decoration:none;}
+.link-view:hover{text-decoration:underline;}
+.empty{text-align:center;padding:4rem 0;color:var(--muted);}
+.empty i{font-size:2.5rem;display:block;margin-bottom:.8rem;color:var(--muted2);}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><i class="bi bi-cpu-fill me-1"></i>Intelli<span class="brand-dot">·</span>Credit AI</div>
+  <a href="/onboarding" class="btn-new"><i class="bi bi-plus"></i>New Entity</a>
+</div>
+<div class="wrap">
+  <div class="page-hd">
+    <h1>Entity Portfolio</h1>
+    <p>All onboarded entities and their credit assessment status.</p>
+  </div>
+  {% if entities %}
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Entity Name</th><th>CIN</th><th>Sector</th><th>Turnover (Cr)</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody>
+        {% for e in entities %}
+        <tr>
+          <td style="color:var(--muted2)">{{ e.id }}</td>
+          <td><strong>{{ e.company_name }}</strong></td>
+          <td style="color:var(--muted);font-size:.78rem;font-family:monospace">{{ e.cin }}</td>
+          <td>{{ e.sector or '—' }}</td>
+          <td>{{ e.turnover or '—' }}</td>
+          <td>
+            {% if e.status == 'Data Extracted' %}<span class="badge-ok">{{ e.status }}</span>
+            {% else %}<span class="badge-pend">{{ e.status or 'Onboarded' }}</span>{% endif %}
+          </td>
+          <td><a class="link-view" href="/entity/{{ e.id }}/dashboard">View Report →</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <i class="bi bi-building"></i>
+    <p>No entities onboarded yet.</p>
+    <a href="/onboarding" class="btn-new d-inline-flex mt-3">+ Onboard First Entity</a>
+  </div>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Entity Onboarding | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+:root{--bg:#F8FAFC;--white:#fff;--border:#E2E8F0;--primary:#1E40AF;--green:#059669;--amber:#D97706;--text:#0F172A;--muted:#64748B;}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-size:.9rem;font-weight:700;color:var(--primary);}
+.brand-dot{color:var(--green);}
+.back-link{font-size:.8rem;color:var(--muted);text-decoration:none;}
+.back-link:hover{color:var(--text);}
+.wrap{max-width:700px;margin:3rem auto;padding:0 1.5rem;}
+
+/* Step bar */
+.step-bar{display:flex;align-items:center;margin-bottom:2rem;}
+.sb-item{display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:500;color:var(--muted);}
+.sb-item.active{color:var(--primary);font-weight:600;}
+.sb-item.done{color:var(--green);font-weight:600;}
+.sb-num{width:22px;height:22px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;flex-shrink:0;}
+.sb-item.active .sb-num{background:var(--primary);border-color:var(--primary);color:#fff;}
+.sb-item.done .sb-num{background:var(--green);border-color:var(--green);color:#fff;}
+.sb-line{flex:1;height:1px;background:var(--border);margin:0 .6rem;}
+.sb-line.done{background:var(--green);}
+
+/* Flash */
+.flash-warn{background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:.65rem 1rem;font-size:.8rem;color:#92400e;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.flash-err{background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:.65rem 1rem;font-size:.8rem;color:#991b1b;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+
+/* Form card */
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:2rem;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+.card-title{font-size:1rem;font-weight:700;margin-bottom:1.2rem;color:var(--text);}
+label{font-size:.77rem;font-weight:500;color:var(--muted);display:block;margin-bottom:.3rem;}
+input,select,textarea{background:var(--white);border:1px solid var(--border);color:var(--text);font-size:.84rem;padding:.5rem .75rem;border-radius:6px;width:100%;font-family:'Inter',sans-serif;transition:border-color .2s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,64,175,.08);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem;}
+.form-row-1{margin-bottom:.9rem;}
+.btn-next{background:var(--primary);color:#fff;font-weight:600;font-size:.84rem;border:none;padding:.6rem 1.5rem;border-radius:6px;cursor:pointer;}
+.btn-next:hover{background:#1e3a8a;}
+.btn-back{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.84rem;padding:.6rem 1.2rem;border-radius:6px;cursor:pointer;}
+.btn-back:hover{border-color:var(--text);color:var(--text);}
+.btn-create{background:var(--green);color:#fff;font-weight:700;font-size:.86rem;border:none;padding:.65rem 2rem;border-radius:6px;cursor:pointer;}
+.btn-create:hover{background:#047857;}
+.btn-row{display:flex;justify-content:space-between;margin-top:1.5rem;}
+.step-section{display:none;animation:fi .25s;}
+.step-section.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><i class="bi bi-cpu-fill me-1"></i>Intelli<span class="brand-dot">·</span>Credit AI</div>
+  <a href="/" class="back-link"><i class="bi bi-arrow-left me-1"></i>Portfolio</a>
+</div>
+<div class="wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}{% for cat, msg in messages %}
+  <div class="{{ 'flash-err' if cat=='danger' else 'flash-warn' }}"><i class="bi bi-info-circle"></i>{{ msg }}</div>
+  {% endfor %}{% endif %}{% endwith %}
+
+  <div class="step-bar" id="stepBar">
+    <div class="sb-item active" id="sb1"><div class="sb-num">1</div>Company Details</div>
+    <div class="sb-line" id="sl1"></div>
+    <div class="sb-item" id="sb2"><div class="sb-num">2</div>Financial Info</div>
+    <div class="sb-line" id="sl2"></div>
+    <div class="sb-item" id="sb3"><div class="sb-num">3</div>Loan Request</div>
+  </div>
+
+  <div class="form-card">
+    <form id="obForm" action="/api/entity/create" method="POST">
+
+      <div class="step-section active" id="step1">
+        <div class="card-title">Company Details</div>
+        <div class="form-row">
+          <div><label>Company Name *</label><input type="text" name="company_name" required placeholder="e.g. Reliance Industries"></div>
+          <div><label>CIN *</label><input type="text" name="cin" required placeholder="L12345MH2000PLC123456"></div>
+        </div>
+        <div class="form-row">
+          <div><label>PAN</label><input type="text" name="pan" placeholder="ABCDE1234F"></div>
+          <div><label>Incorporation Date</label><input type="date" name="incorporation_date"></div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Sector</label>
+            <select name="sector">
+              <option value="">— Select —</option>
+              {% for s in ['Manufacturing','IT Services','BFSI','Healthcare','Infrastructure','Energy','FMCG','Real Estate','Telecom','Logistics','Retail','Auto','Agriculture','Education','Other'] %}
+              <option>{{ s }}</option>{% endfor %}
+            </select>
+          </div>
+          <div><label>Sub-sector</label><input type="text" name="subsector" placeholder="e.g. Petrochemicals"></div>
+        </div>
+        <div class="btn-row"><span></span><button type="button" class="btn-next" onclick="go(2)">Next <i class="bi bi-arrow-right ms-1"></i></button></div>
+      </div>
+
+      <div class="step-section" id="step2">
+        <div class="card-title">Financial Information</div>
+        <div class="form-row">
+          <div><label>Annual Turnover (₹ Crore)</label><input type="number" step="0.01" name="turnover" placeholder="e.g. 15000"></div>
+          <div><label>Promoters / Key Management</label><input type="text" name="promoters" placeholder="e.g. Mukesh Ambani"></div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="go(1)"><i class="bi bi-arrow-left me-1"></i>Back</button>
+          <button type="button" class="btn-next" onclick="go(3)">Next <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+
+      <div class="step-section" id="step3">
+        <div class="card-title">Loan / Facility Request</div>
+        <div class="form-row">
+          <div>
+            <label>Loan Type</label>
+            <select name="loan_type">
+              <option value="">— Select —</option>
+              {% for lt in ['Term Loan','Working Capital','Cash Credit','Bill Discounting','LC / BG','Overdraft','ECB','NCD / Debenture','Project Finance','Other'] %}
+              <option>{{ lt }}</option>{% endfor %}
+            </select>
+          </div>
+          <div><label>Loan Amount (₹ Crore)</label><input type="number" step="0.01" name="loan_amount" placeholder="e.g. 500"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Tenure (months)</label><input type="number" name="loan_tenure" placeholder="e.g. 84"></div>
+          <div><label>Proposed Interest Rate (%)</label><input type="number" step="0.1" name="interest_rate" placeholder="e.g. 10.5"></div>
+        </div>
+        <div class="form-row-1">
+          <label>Purpose of Loan</label>
+          <textarea name="purpose" rows="3" placeholder="Describe the end-use of funds…"></textarea>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="go(2)"><i class="bi bi-arrow-left me-1"></i>Back</button>
+          <button type="submit" class="btn-create" id="createBtn"><i class="bi bi-cpu me-1"></i>Create Entity &amp; Continue</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function go(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('step'+i).classList.toggle('active',i===n);
+    const sb=document.getElementById('sb'+i);
+    if(i<n){sb.className='sb-item done';sb.querySelector('.sb-num').innerHTML='<i class="bi bi-check-lg" style="font-size:.6rem"></i>';}
+    else if(i===n){sb.className='sb-item active';sb.querySelector('.sb-num').textContent=i;}
+    else{sb.className='sb-item';sb.querySelector('.sb-num').textContent=i;}
+    if(i<3){document.getElementById('sl'+i).className=i<n?'sb-line done':'sb-line';}
+  });
+}
+document.getElementById('obForm').addEventListener('submit',()=>{
+  const b=document.getElementById('createBtn');b.disabled=true;b.innerHTML='<i class="bi bi-hourglass-split me-1"></i>Creating…';
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
